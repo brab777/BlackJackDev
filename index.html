@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Casino Blackjack</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emscripten/2.0.31/system.js"></script>
+  </head>
+  <body>
+    <div id="unity-container">
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+    </div>
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("ServiceWorker.js");
+        }
+      });
+
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      let strategy;
+      const backendUrl = `https://rngbj.kasoom.com/`;
+
+      // WebSocket and backend URL setup
+      const socket = io(backendUrl, {
+        transports: ['websocket'], // Ensure WebSocket transport is used
+        upgrade: false,
+        withCredentials: true
+      });
+
+      let info = {};
+
+      console.log('Backend Url: ', backendUrl);
+
+      function setPlayer(table) {
+        if (typeof socket !== 'undefined') {
+          let mess = {
+            type: 'delaerAction',
+            command: 'setTable',
+            tableId: table
+          };
+          postMessage(mess, '*');
+          info.tableID = table;
+          try {
+            if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
+            console.log('Trying setPlayer emit...');
+            socket.emit('setPlayer', mess, (response) => {
+              if (response && response.error) {
+                console.log('Emit error: ', response.error);
+                // Handle the error (e.g., display a message to the user)
+              } else {
+                console.log('Emit successful: ', response);
+              }
+            });
+          } catch (error) {
+            console.log('Emit exception:', error.message);
+            // Handle the exception (e.g., attempt to reconnect)
+            tryReconnect(new Date());
+          }
+          console.log('setPlayer message: ', mess);
+        } else {
+          console.log('Socket is not defined, cannot set player');
+        }
+      }
+
+      function setUser(player) {
+        info.playerID = player;
+      }
+
+      function tryReconnect(disconnectTime) {
+        console.log("Trying to reconnect...");
+        setTimeout(() => {
+          if (!socket.connected) {
+            socket.connect();
+          }
+          if (!socket.connected) {
+            // Continue trying to reconnect if not connected
+            tryReconnect();
+          } else {
+            console.log('Connection reestablished!');
+            // Reinitialize any necessary state or send any necessary messages here
+            // For example, if you need to reset the player:
+            if (info && info.tableID && info.playerID) {
+              setPlayer(info.tableID, info.playerID);
+            }else
+            {
+              console.log('... no player information at reconnection.');
+            }
+          }
+        }, 3000);
+      }
+
+      function initializeSocket() {
+
+        socket.on('disconnect', (reason) => {
+          console.log("Disconnected from server...", reason);
+          if (reason === "io server disconnect") {
+            // Server disconnected the socket
+            console.log("Server initiated disconnection.");
+            tryReconnect(new Date());
+          } else if (reason === "transport close" || reason === "ping timeout") {
+            // Network issues or client-side disconnects
+            console.log("Client-side disconnection or network issue.");
+            tryReconnect(new Date());
+          } else {
+            console.log("Unknown disconnection reason:", reason);
+          }
+        });
+
+        socket.on('connect_error', (error) => {
+          console.log("Connection error:", error.message);
+          // Handle connection error
+        });
+
+        socket.on('reconnect_error', (error) => {
+          console.log("Reconnection error:", error.message);
+          // Handle reconnection error
+        });
+
+        socket.on('newState', data => {
+          console.log("NewState Called...");
+          data.newStatus = true;
+          data.type = 'newState';
+          console.log(data);
+          postMessage(data, "*");
+        });
+
+        socket.on('newClientStatus', data => {
+          console.log('newClientStatus', data);
+          data.newStatus = true;
+          data.newPrivatestat = true;
+          postMessage(data, "*");
+        });
+
+        socket.on('NewBalance', () => {
+          console.log('New balance.');
+        });
+
+        socket.on("showMess", data => {
+          console.log("Message: ", data);
+          data.type = "showMess";
+          postMessage(data, '*');
+        });
+    }
+
+    window.addEventListener('offline', () => {
+      console.log('The network connection has been lost.');
+    });
+
+    window.addEventListener('online', () => {
+      console.log('The network connection has been restored.');
+    });
+
+    initializeSocket();
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/Blackjack Build.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/Blackjack Build.data",
+        frameworkUrl: buildUrl + "/Blackjack Build.framework.js",
+        
+        codeUrl: buildUrl + "/Blackjack Build.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Vivo",
+        productName: "Casino Blackjack",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
+
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+      }
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";          
+          const currentUrl = window.location.href;
+          unityInstance.SendMessage('GameManager','SendToken',currentUrl);      
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
