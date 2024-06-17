@@ -54,6 +54,18 @@
         withCredentials: true
       });
 
+      let info = {
+            token,
+            operatorID,
+            tableguid,
+            gameid,
+            bankID,
+            lang,
+            mode,
+            hashPasskey,
+            tableID
+      };
+      
       console.log('Backend Url: ', backendUrl);
 
       function setPlayer(table) {
