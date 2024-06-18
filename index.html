@@ -71,8 +71,8 @@
           postMessage(mess, '*');
           info.tableID = table;
           try {
-            //if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
-            //console.log('Trying setPlayer emit...');
+            if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
+            console.log('Trying setPlayer emit...');
             socket.emit('setPlayer', mess, (response) => {
               if (response && response.error) {
                 console.log('Emit error: ', response.error);
