@@ -37,6 +37,16 @@
       let strategy;
       const backendUrl = `https://rngbj.kasoom.com/`;
 
+      const urlParams = new URLSearchParams(window.location.search);
+      console.log('wls url: ', window.location.search);
+      const token = urlParams.get('token');
+      console.log('token: ', token);
+      const operatorID = urlParams.get('operatorID');
+      console.log('operatorID: ', operatorID);
+      const tableguid = "C8C12026C4F04EE4B5900BA017119B52";
+      const gameid = urlParams.get('gameid');
+      console.log('gameid: ', gameid);
+
       // WebSocket and backend URL setup
       const socket = io(backendUrl, {
         transports: ['websocket'], // Ensure WebSocket transport is used
@@ -44,8 +54,18 @@
         withCredentials: true
       });
 
-      let info = {};
-
+      let info = {
+            token,
+            operatorID,
+            tableguid,
+            gameid,
+            bankID,
+            lang,
+            mode,
+            hashPasskey,
+            tableID
+      };
+      
       console.log('Backend Url: ', backendUrl);
 
       function setPlayer(table) {
@@ -53,8 +73,9 @@
           let mess = {
             type: 'delaerAction',
             command: 'setTable',
-            tableId: table
+            tableId: table,
           };
+          
           postMessage(mess, '*');
           info.tableID = table;
           try {
@@ -97,7 +118,7 @@
             // Reinitialize any necessary state or send any necessary messages here
             // For example, if you need to reset the player:
             if (info && info.tableID && info.playerID) {
-              setPlayer(info.tableID, info.playerID);
+              setPlayer(info.tableID);
             }else
             {
               console.log('... no player information at reconnection.');
