@@ -40,14 +40,10 @@
       const urlParams = new URLSearchParams(window.location.search);
       console.log('wls url: ', window.location.search);
       const bankID = urlParams.get('bankID');
-      console.log('token: ', token);
       const token = urlParams.get('token');
-      console.log('token: ', token);
       const operatorID = urlParams.get('operatorID');
-      console.log('operatorID: ', operatorID);
       const tableguid = "C8C12026C4F04EE4B5900BA017119B52";
       const gameid = urlParams.get('gameid');
-      console.log('gameid: ', gameid);
 
       // WebSocket and backend URL setup
       const socket = io(backendUrl, {
