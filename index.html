@@ -47,7 +47,9 @@
 
       // WebSocket and backend URL setup
       const socket = io(backendUrl, {
-        withCredentials: true
+        transports: ['websocket'], // Ensure WebSocket transport is used
+	upgrade: false,
+	withCredentials: true
       });
 
       let info = {
