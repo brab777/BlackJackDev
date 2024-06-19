@@ -63,6 +63,24 @@
         upgrade: false,
         withCredentials: true
       });
+	
+	const sendMessage = (type, data) => {
+	    socket.emit(type, JSON.stringify(data));
+	};
+
+    	socket.on('connect', () => {
+	    console.log('Connected to WebSocket server');
+	
+	    // Example of sending an initialization message to the WebSocket server
+	    const initMessage = {
+		action: 'init',
+		token: token,
+		operatorID: operatorID,
+		bankID: bankID,
+	    };
+	
+	    sendMessage('init', initMessage);
+	});
 
       let info = {
             token,
