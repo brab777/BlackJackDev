@@ -63,7 +63,8 @@
       });
 	
 	const sendMessage = (type, data) => {
-	    socket.emit(type, JSON.stringify(data));
+		console.log(`Sending message of type ${type} with data:`, data);	
+	    	socket.emit(type, JSON.stringify(data));
 	};
 
     	socket.on('connect', () => {
@@ -181,6 +182,10 @@
         socket.on('connect_error', (error) => {
           console.log("Connection error:", error.message);
           // Handle connection error
+        });
+
+	socket.on('error', (error) => {
+            console.error('WebSocket Error:', error);
         });
 
         socket.on('reconnect_error', (error) => {
