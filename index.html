@@ -82,6 +82,18 @@
 	    sendMessage('init', initMessage);
 	});
 
+    	socket.on('message', (message) => {
+            console.log('Received message:', message);
+            // Handle incoming messages from the WebSocket server
+            if (typeof message === 'string') {
+                const data = JSON.parse(message);
+                if (data.action === 'init_response') {
+                    setUser(data.info.userId);
+                    setPlayer(data.info.sessionId);
+                }
+            }
+        });
+
       let info = {
             token,
             operatorID,
