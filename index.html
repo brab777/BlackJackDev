@@ -20,6 +20,18 @@
       </div>
       <div id="unity-warning"> </div>
     </div>
+    <script>  
+      XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
+      var newOpen = function(_, url) {  
+        var original = this.originalOpen.apply(this, arguments);  
+        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {  
+          this.withCredentials = true;  
+        }  
+     
+        return original;  
+      }  
+      XMLHttpRequest.prototype.open = newOpen;  
+    </script>
 	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script>
       window.addEventListener("load", function () {
@@ -47,6 +59,8 @@
 
       // WebSocket and backend URL setup
       const socket = io(backendUrl, {
+        transports: ['websocket'], // Ensure WebSocket transport is used
+        upgrade: false,
         withCredentials: true
       });
 
@@ -71,8 +85,8 @@
           postMessage(mess, '*');
           info.tableID = table;
           try {
-            if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
-            console.log('Trying setPlayer emit...');
+            //if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
+            //console.log('Trying setPlayer emit...');
             socket.emit('setPlayer', mess, (response) => {
               if (response && response.error) {
                 console.log('Emit error: ', response.error);
