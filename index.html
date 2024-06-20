@@ -62,12 +62,11 @@
       fetch('https://rngbj.kasoom.com/api/init', {
 	method: 'POST',
 	headers: {
-		'Content-Type' : 'application/json; charset=UTF-8',
+		'Content-Type' : 'application/json',
 		'access-control-allow-credentials' : true,
 		'withCredentials' : true
 	},
 	body: JSON.stringify({
-		action: 'init',
 		token: token,
 		operatorID: bankID 
 	})
