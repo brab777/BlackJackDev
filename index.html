@@ -117,6 +117,7 @@
             //if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
             //console.log('Trying setPlayer emit...');
             socket.emit('setPlayer', mess, (response) => {
+		console.log('Response: ', response);   
               if (response && response.error) {
                 console.log('Emit error: ', response.error);
                 // Handle the error (e.g., display a message to the user)
