@@ -66,11 +66,11 @@
 		'access-control-allow-credentials' : true,
 		'withCredentials' : true
 	},
-	body: {
+	body: JSON.stringify({
 		action: 'init',
 		token: token,
 		operatorID: bankID 
-	}
+	})
       })
       .then(data => {
 	console.log('Success:', data);
