@@ -74,6 +74,8 @@
       })
       .then(data => {
 	console.log('Success:', data);
+	console.log('Data info:', data.info);
+	console.log('Data info:', data.sessionId);
 	setPlayer(data.info.sessionId);
       })
       .catch(error => {
