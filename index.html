@@ -115,7 +115,7 @@
           info.tableID = table;
           try {
             //if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
-            //console.log('Trying setPlayer emit...');
+            console.log('Trying setPlayer emit...');
             socket.emit('setPlayer', mess, (response) => {
 		console.log('Response: ', response);   
               if (response && response.error) {
