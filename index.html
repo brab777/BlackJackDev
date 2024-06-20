@@ -51,18 +51,85 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       console.log('wls url: ', window.location.search);
-      const bankID = urlParams.get('bankID');
+      const bankID = urlParams.get('bankId');
       const token = urlParams.get('token');
       const operatorID = urlParams.get('operatorID');
       const tableguid = "C8C12026C4F04EE4B5900BA017119B52";
       const gameid = urlParams.get('gameid');
 
+    document.addEventListener('DOMContentLoaded', () => {
+
+      fetch('https://rngbj.kasoom.com/api/init', {
+	method: 'POST',
+	headers: {
+		'Content-Type' : 'application/json',
+		'access-control-allow-credentials' : true,
+		'withCredentials' : true,
+		'ESTE-NO-ES' : '-------------------------------------------------------------------------------------------------'
+	},
+	body: JSON.stringify({
+		token: token,
+		operatorID: bankID 
+	})
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parsing the JSON response
+      })
+      .then(data => {
+	console.log('Success:', data);
+	console.log('Data info:', data.info);
+	console.log('Data info:', data.sessionId);
+	setPlayer(data.info.sessionId);
+      })
+      .catch(error => {
+	console.error('Error:', error);
+      });
+    });
+	    
       // WebSocket and backend URL setup
       const socket = io(backendUrl, {
-        transports: ['websocket'], // Ensure WebSocket transport is used
-        upgrade: false,
         withCredentials: true
       });
+	
+	const sendMessage = (type, data) => {
+		console.log(`Sending message of type ${type} with data:`, data);	
+	    	socket.emit(type, JSON.stringify(data));
+	};
+
+    	socket.on('connect', () => {
+	    console.log('Connected to WebSocket server');
+	
+	    // Example of sending an initialization message to the WebSocket server
+	    const initMessage = {
+		header: {
+			'Content-Type' : 'application/json; charset=UTF-8',
+			'access-control-allow-credentials' : true,
+			'withCredentials' : true
+		},
+		body: {
+		   	action: 'init',
+			token: token,
+			operatorID: bankID 
+	    	}
+	    };
+	    sendMessage('init', initMessage);
+	    
+	});
+
+    	socket.on('message', (message) => {
+            console.log('Received message:', message);
+            // Handle incoming messages from the WebSocket server
+            if (typeof message === 'string') {
+                const data = JSON.parse(message);
+                if (data.action === 'init_response') {
+                    setUser(data.info.userId);
+                    setPlayer(data.info.sessionId);
+                }
+            }
+        });
 
       let info = {
             token,
@@ -74,6 +141,8 @@
       
       console.log('Backend Url: ', backendUrl);
 
+      
+	    
       function setPlayer(table) {
         if (typeof socket !== 'undefined') {
           let mess = {
@@ -86,8 +155,9 @@
           info.tableID = table;
           try {
             //if(socket.connected) console.log('Socket still connected to: ', socket.io.uri);
-            //console.log('Trying setPlayer emit...');
+            console.log('Trying setPlayer emit...');
             socket.emit('setPlayer', mess, (response) => {
+		console.log('Response: ', response);   
               if (response && response.error) {
                 console.log('Emit error: ', response.error);
                 // Handle the error (e.g., display a message to the user)
@@ -153,6 +223,10 @@
         socket.on('connect_error', (error) => {
           console.log("Connection error:", error.message);
           // Handle connection error
+        });
+
+	socket.on('error', (error) => {
+            console.error('WebSocket Error:', error);
         });
 
         socket.on('reconnect_error', (error) => {
@@ -259,7 +333,7 @@
         }).then((unityInstance) => {
           loadingBar.style.display = "none";          
           const currentUrl = window.location.href;
-          unityInstance.SendMessage('GameManager','SendToken',currentUrl);      
+          //unityInstance.SendMessage('GameManager','SendToken',currentUrl);      
         }).catch((message) => {
           alert(message);
         });
