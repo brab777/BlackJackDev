@@ -65,6 +65,7 @@
 	const sendMessage = (type, data) => {
 		console.log(`Sending message of type ${type} with data:`, data);	
 	    	socket.emit(type, JSON.stringify(data));
+		setPlayer(data.info.sessionId);
 	};
 
     	socket.on('connect', () => {
@@ -72,13 +73,19 @@
 	
 	    // Example of sending an initialization message to the WebSocket server
 	    const initMessage = {
-		action: 'init',
-		token: token,
-		operatorID: operatorID,
-		bankID: bankID,
+		header: {
+			'Content-Type' : 'application/json; charset=UTF-8',
+			'access-control-allow-credentials' : true,
+			'withCredentials' : true
+		},
+		body: {
+		   	action: 'init',
+			token: token,
+			operatorID: bankID 
+	    	}
 	    };
-	
 	    sendMessage('init', initMessage);
+	    
 	});
 
     	socket.on('message', (message) => {
@@ -98,7 +105,8 @@
             operatorID,
             tableguid,
             gameid,
-            bankID
+            bankID,
+	    sessionId
       };
       
       console.log('Backend Url: ', backendUrl);
@@ -293,7 +301,7 @@
         }).then((unityInstance) => {
           loadingBar.style.display = "none";          
           const currentUrl = window.location.href;
-          unityInstance.SendMessage('GameManager','SendToken',currentUrl);      
+          //unityInstance.SendMessage('GameManager','SendToken',currentUrl);      
         }).catch((message) => {
           alert(message);
         });
