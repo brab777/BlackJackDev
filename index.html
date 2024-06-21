@@ -81,7 +81,6 @@
       .then(data => {
 	console.log('Success:', data);
 	console.log('Data info:', data.info);
-	console.log('Data info:', data.sessionId);
 	setPlayer(data.info.sessionId);
       })
       .catch(error => {
@@ -96,7 +95,9 @@
 	
 	const sendMessage = (type, data) => {
 		console.log(`Sending message of type ${type} with data:`, data);	
-	    	socket.emit(type, JSON.stringify(data));
+	    	socket.emit(type, JSON.stringify(data), (response) => {
+        	console.log(`Received response for ${type}:`, response);
+	      });
 	};
 
     	socket.on('connect', () => {
