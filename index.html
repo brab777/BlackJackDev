@@ -94,10 +94,16 @@
       });
 	
 	const sendMessage = (type, data) => {
-		console.log(`Sending message of type ${type} with data:`, data);	
-	    	socket.emit(type, JSON.stringify(data), (response) => {
-        	console.log(`Received response for ${type}:`, response);
-	      });
+		console.log(`Sending message of type ${type} with data:`, data);  
+      		socket.emit(type, JSON.stringify(data), (response) => {
+	        	console.log(`Received response for ${type}:`, response);
+	        	// Handle the response as needed
+	        	if (response.error) {
+	          		console.error('Error in response:', response.error);
+	        	} else {
+	          		console.log('Response data:', response);
+	        	}
+     	 	});
 	};
 
     	socket.on('connect', () => {
