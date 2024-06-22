@@ -216,7 +216,59 @@
           }
         }, 3000);
       }
+	    
+	addEventListener('change',(e)=>{// whay table work from itself and player should make a change??????
+	        let el=e.target
+	        if (el.id=='dealerKey'){
+	            dealerKey=el.value;     
+	        }
+	        if (el.id=='playerID'){
+	            playerID=el.value;    
+	            capi.setPlayer(tableID,playerID)//????where he has tableID from?
+	        }
+	        if (el.id=='tableID'){
+	            tableID=el.value;
+	            //capi.setTable(tableID);
+	            capi.setPlayer(tableID,playerID)
+	        }
+	        if (el.id=='strategy'){
+	            strategy=el.value;
+	            capi.setStrategy(playerID,tableID,strategy);
+	        }
+	    })
+	    
+	addEventListener('message',e=>{
+	        if (!e.data || !e.data.newStatus){ //not a new state message from capi
+	            return;
+	        }
+	       // console.log(e.data)
+	        renderState(e.data)
+	
+	        //capi.getProfile().then(res=>{
+	        //    if (res.displayName == document.body.getAttribute("curUser")){return;}; //no change
+		//
+	        //    if (res.displayName){
+	        //        $$("signInName").textContent=`${res.displayName}`;
+	        //        document.body.setAttribute("curUser",res.displayName);
+	        //    }else{
+	        //        document.body.removeAttribute("curUser");
+	        //    }
+	        //})
+    	})
 
+	function renderState(state){
+	        if(!state.newPrivatestat){
+	            $$("json").innerHTML=JSON.stringify(state, undefined, 2)
+	        }
+	        else{
+	            $$("prjson").innerHTML=JSON.stringify(state, undefined, 2)
+	
+	        }    
+	
+	}
+
+	function $$(str){return document.getElementById(str)}
+	    
       function initializeSocket() {
 
         socket.on('disconnect', (reason) => {
