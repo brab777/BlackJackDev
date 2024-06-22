@@ -138,6 +138,13 @@
             }
         });
 
+	socket.on('newClientStatus', data => {
+          console.log('newClientStatus', data);
+          data.newStatus = true;
+          data.newPrivatestat = true;
+          postMessage(data, "*");
+        });
+
       let info = {
             token,
             operatorID,
@@ -248,14 +255,7 @@
           console.log(data);
           postMessage(data, "*");
         });
-
-        socket.on('newClientStatus', data => {
-          console.log('newClientStatus', data);
-          data.newStatus = true;
-          data.newPrivatestat = true;
-          postMessage(data, "*");
-        });
-
+	      
         socket.on('NewBalance', () => {
           console.log('New balance.');
         });
