@@ -224,17 +224,17 @@
 	        }
 	        if (el.id=='playerID'){
 	            playerID=el.value;    
-	            capi.setPlayer(tableID,playerID)//????where he has tableID from?
+	            setPlayer(tableID,playerID)//????where he has tableID from?
 	        }
 	        if (el.id=='tableID'){
 	            tableID=el.value;
 	            //capi.setTable(tableID);
-	            capi.setPlayer(tableID,playerID)
+	            setPlayer(tableID,playerID)
 	        }
-	        if (el.id=='strategy'){
-	            strategy=el.value;
-	            capi.setStrategy(playerID,tableID,strategy);
-	        }
+	        //if (el.id=='strategy'){
+	        //   strategy=el.value;
+	        //    capi.setStrategy(playerID,tableID,strategy);
+	        //}
 	    })
 	    
 	addEventListener('message',e=>{
