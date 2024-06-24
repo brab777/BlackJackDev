@@ -181,6 +181,7 @@ const call = async (command, method, body) => {
 async function init(token) {
     const res = await fetchRequest(`init?token=${token}`, 'GET')
     console.log('Init response: ', res)
+    setPlayer(res.info.sessionId)
     return res
 }
 
