@@ -76,11 +76,11 @@
     
     document.addEventListener('DOMContentLoaded', async () => {
         let dealerKey = document.getElementById('dealerKey').value;
-        let tableID = document.getElementById('tableID').value;
-        let playerID= initResponse.info.userId;
     });  
+    let tableID = initResponse.info.sessionId;
+    let playerID= initResponse.info.userId;
     
-    //player.setPlayer(tableID);
+    player.setPlayer(tableID);
     
     //------------------------------------------------------------------------------------------------------------------Listeners
     
