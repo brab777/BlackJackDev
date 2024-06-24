@@ -7,8 +7,7 @@ console.log("Backend URL: ", backendUrl)
 //------------------------------------------------------------------------------------------------------------------Socket.on
 
 const socket = io(backendUrl, {
-        withCredentials: true,
-	transports: ["websocket", "polling"]
+        withCredentials: true
 });
 
 socket.on('disconnect', (reason) => {
