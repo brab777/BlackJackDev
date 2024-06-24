@@ -1,26 +1,39 @@
-<html>
-<header>    
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Casino Blackjack</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="manifest" href="manifest.webmanifest">
-</header>
-<body>       
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emscripten/2.0.31/system.js"></script>
+</head>
+<body>
     <div id="unity-container">
-        <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-        <div id="unity-loading-bar">
-          <div id="unity-logo"></div>
-          <div id="unity-progress-bar-empty">
-            <div id="unity-progress-bar-full"></div>
-          </div>
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
         </div>
-        <div id="unity-warning"> </div>
+      </div>
+      <div id="unity-warning"> </div>
     </div>
-</body>
-    
-<script src="/socket.io/socket.io.js"></script> 
+<script>  
+      XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
+      var newOpen = function(_, url) {  
+        var original = this.originalOpen.apply(this, arguments);  
+        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {  
+          this.withCredentials = true;  
+        }  
+     
+        return original;  
+      }  
+      XMLHttpRequest.prototype.open = newOpen;  
+</script>
+      
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     
 <script>  
     XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
@@ -33,7 +46,6 @@
     }  
     XMLHttpRequest.prototype.open = newOpen;  
 </script>
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script type="module">
 
 
