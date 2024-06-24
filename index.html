@@ -106,6 +106,8 @@
     addEventListener('message',e=>{
         if (!e.data || !e.data.newStatus){
             console.log("No data to show.")
+            console.log(e)
+            console.log(e.data)
             return;
         }
         console.log(e.data)
