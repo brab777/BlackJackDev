@@ -84,7 +84,7 @@ function tryReconnect(disconnectTIme) {
         socket.connect();
         setTimeout(() => {
             tryReconnect()
-        }, 300)
+        }, 4000)
 
     } else {
         console.log("Connection reestablished!")
