@@ -133,9 +133,9 @@ async function activateGame(token, operator = '') {
 
     let finalRes = await res.json()
     if (finalRes.status == "OK") {
-        //setPlayer();
+        setPlayer(finalRes.info.sessionId);
     }
-    console.log("Init response: ", finalRes)
+    console.log("Activation response: ", finalRes)
     return finalRes;
 }
 
