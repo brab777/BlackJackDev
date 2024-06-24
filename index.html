@@ -1,25 +1,24 @@
 <html>
-    <header>
-        <script src="/socket.io/socket.io.js"></script>       
-        <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Casino Blackjack</title>
-        <link rel="shortcut icon" href="TemplateData/favicon.ico">
-        <link rel="stylesheet" href="TemplateData/style.css">
-        <link rel="manifest" href="manifest.webmanifest">
-    </header>
-    <body>       
-        <div id="unity-container">
-            <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-            <div id="unity-loading-bar">
-              <div id="unity-logo"></div>
-              <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-              </div>
-            </div>
-            <div id="unity-warning"> </div>
+<header>
+    <script src="/socket.io/socket.io.js"></script>       
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Casino Blackjack</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <link rel="manifest" href="manifest.webmanifest">
+</header>
+<body>       
+    <div id="unity-container">
+        <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+        <div id="unity-loading-bar">
+          <div id="unity-logo"></div>
+          <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+          </div>
         </div>
-    </body>
+        <div id="unity-warning"> </div>
+    </div>
 
 <script>  
     XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
@@ -192,4 +191,5 @@ import * as player from './playerClient.js';
     document.body.appendChild(script);
 
 </script>
+</body>
 </html> 
