@@ -1,5 +1,3 @@
-const socketIo = require('socket.io');
-
 var socket = io();
 let info = {};
 const backendUrl = `${window.location.protocol}//${window.location.hostname}`; //'https://rngbj.kasoom.com/';
