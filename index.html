@@ -73,7 +73,7 @@ import * as player from './playerClient.js';
     }
     
     let strategy;
-    let dealerKey=$$("dealerKey").value;
+    //let dealerKey=$$("dealerKey").value;
     let tableID=$$('tableID').value;
     let playerID= initResponse.info.userId;
 
@@ -85,9 +85,10 @@ import * as player from './playerClient.js';
 
         let el=e.target
 
-        if (el.id=='dealerKey'){
-            dealerKey=el.value;     
-        }
+        //if (el.id=='dealerKey'){
+        //     dealerKey=el.value;     
+        //}
+        
         if (el.id=='playerID'){
             playerID=el.value;  
             player.setPlayer(tableID,playerID)
