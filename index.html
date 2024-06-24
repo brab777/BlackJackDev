@@ -112,34 +112,6 @@
         renderState(e.data)
     })
 
-    addEventListener('click',e=>{
-        let ect;
-        console.log('click')
-        
-        if (!e.target || !e.target.getAttribute || !(ect=e.target.getAttribute('act'))){
-            return;
-        }
-        const urlParams = new URLSearchParams(window.location.search);
-
-        console.log("ZZZZZ",ect,playerID,tableID)
-        let p=(
-            ect == 'bet' ? player.BetApi(playerID,tableID,$$('betAmount').value,$$('handNo').value) :
-            ect == 'init' ? player.activateGame(urlParams.get("token")) ://
-            ect == 'stand' ? player.StandApi(playerID,tableID) :
-            ect == 'hit' ? player.HitApi(playerID,tableID) :
-            ect == 'split' ? player.splitApi(playerID,tableID) :
-            ect == 'double' ? player.DoubleApi(playerID,tableID) :
-            ect == 'insurance' ? player.insuranceApi(playerID,tableID, $$('handNo').value) :
-            ect == 'evenMoney' ? player.evenMoney(playerID,tableID) : 
-            ect == 'sideBetPPair' ? player.sideBetApi(playerID,tableID,$$('PPairbetAmount').value,$$('handNo').value,"sideBetPpair") :
-            ect == 'sideBet21P3' ? player.sideBetApi(playerID,tableID,$$('21P3betAmount').value,$$('handNo').value,"sideBet21p3") : 
-            ect == 'next' ? player.next(playerID,tableID) :
-            ect == 'confirmBets' ? player.confirmBets(playerID,tableID) : 0
-        );
-        
-        p.then((res)=>{$$("res").innerHTML=JSON.stringify(res, undefined, 2)})
-    })
-
     window.addEventListener('offline', () => {
       console.log('The network connection has been lost.');
     })
