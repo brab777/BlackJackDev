@@ -112,6 +112,34 @@
         renderState(e.data)
     })
 
+    addEventListener('click',e=>{
+        let ect;
+        console.log('click')
+        
+        if (!e.target || !e.target.getAttribute || !(ect=e.target.getAttribute('act'))){//?????last part?
+            return;
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+
+        console.log("ZZZZZ",ect,playerID,tableID)
+        let p=(
+            ect == 'bet' ? capi.BetApi(playerID,tableID,$$('betAmount').value,$$('handNo').value) :
+            ect == 'init' ? capi.activateGame(urlParams.get("token")) ://
+            ect == 'stand' ? capi.StandApi(playerID,tableID) :
+            ect == 'hit' ? capi.HitApi(playerID,tableID) :
+            ect == 'split' ? capi.splitApi(playerID,tableID) :
+            ect == 'double' ? capi.DoubleApi(playerID,tableID) :
+            ect == 'insurance' ? capi.insuranceApi(playerID,tableID, $$('handNo').value) :
+            ect == 'evenMoney' ? capi.evenMoney(playerID,tableID) : 
+            ect == 'sideBetPPair' ? capi.sideBetApi(playerID,tableID,$$('PPairbetAmount').value,$$('handNo').value,"sideBetPpair") :
+            ect == 'sideBet21P3' ? capi.sideBetApi(playerID,tableID,$$('21P3betAmount').value,$$('handNo').value,"sideBet21p3") : 
+            ect == 'next' ? capi.next(playerID,tableID) :
+            ect == 'confirmBets' ? capi.confirmBets(playerID,tableID) : 0
+        );
+        
+        p.then((res)=>{$$("res").innerHTML=JSON.stringify(res, undefined, 2)})
+    })
+
     window.addEventListener('offline', () => {
       console.log('The network connection has been lost.');
     })
