@@ -46,6 +46,7 @@
     }  
     XMLHttpRequest.prototype.open = newOpen;  
 </script>
+    
 <script type="module">
 
 
@@ -73,8 +74,8 @@ import * as player from './playerClient.js';
     }
     
     let strategy;
-    //let dealerKey=$$("dealerKey").value;
-    let tableID=$$('tableID').value;
+    let dealerKey = document.getElementById('dealerKey').value;
+    let tableID = document.getElementById('tableID').value;
     let playerID= initResponse.info.userId;
 
     player.setPlayer(tableID);    
@@ -206,4 +207,5 @@ import * as player from './playerClient.js';
     document.body.appendChild(script);
 
 </script>
+</body>
 </html> 
