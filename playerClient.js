@@ -1,4 +1,4 @@
-//how to throw a msg to the screen from this page
+const socketIo = require('socket.io');
 
 var socket = io();
 let info = {};
