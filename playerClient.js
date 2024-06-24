@@ -1,5 +1,5 @@
 let info = {};
-const backendUrl = `${window.location.protocol}//${window.location.hostname}`; //'https://rngbj.kasoom.com/';
+const backendUrl = `https://rngbj.kasoom.com/`;
 const backendUrl2  = window.location.origin
 
 console.log("Backend URL: ", backendUrl)
@@ -117,7 +117,7 @@ function setUser(player) {
 }
 
 async function activateGame(token, operator = '') {
-    const url = `${backendUrl2}/api/init`;
+    const url = `${backendUrl}/api/init`;
     console.log("Posting token: ", url, token)
 
     let res = await fetch(url, {
