@@ -4,23 +4,6 @@ const backendUrl2  = window.location.origin
 
 console.log("Backend URL: ", backendUrl)
 
-//------------------------------------------------------------------------------------------------------------------Socket Functions
-
-function tryReconnect(disconnectTIme) {
-
-    console.log("Trying to reconnect... ", socket.connected)
-    if (!socket.connected) {
-        socket.connect();
-        setTimeout(() => {
-            tryReconnect()
-        }, 300)
-
-    } else {
-        console.log("Connection reestablished!")
-        setPlayer(info.tableID, info.playerID)
-    }
-}
-
 //------------------------------------------------------------------------------------------------------------------Socket.on
 
 const socket = io(backendUrl, {
@@ -90,6 +73,23 @@ socket.on('error', (error) => {
 socket.on('reconnect_error', (error) => {
     console.log("Reconnection error:", error.message);
 });
+
+//------------------------------------------------------------------------------------------------------------------Socket Functions
+
+function tryReconnect(disconnectTIme) {
+
+    console.log("Trying to reconnect... ", socket.connected)
+    if (!socket.connected) {
+        socket.connect();
+        setTimeout(() => {
+            tryReconnect()
+        }, 300)
+
+    } else {
+        console.log("Connection reestablished!")
+        setPlayer(info.tableID, info.playerID)
+    }
+}
 
 //------------------------------------------------------------------------------------------------------------------Player Functions
 
