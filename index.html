@@ -48,9 +48,10 @@
 </script>
     
 <script type="module">
+    
+import * as player from './playerClient.js';
+    
 
-document.addEventListener('DOMContentLoaded', async () => {
-    import * as player from './playerClient.js';
     
         var container = document.querySelector("#unity-container");
         var canvas = document.querySelector("#unity-canvas");
@@ -74,12 +75,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         
         let strategy;
+    
+    document.addEventListener('DOMContentLoaded', async () => {
         let dealerKey = document.getElementById('dealerKey').value;
         let tableID = document.getElementById('tableID').value;
         let playerID= initResponse.info.userId;
-    
         player.setPlayer(tableID);    
-       
+    });  
     //------------------------------------------------------------------------------------------------------------------Listeners
     
         addEventListener('change',(e)=>{
@@ -205,7 +207,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         };
         document.body.appendChild(script);
-});
 </script>
 </body>
 </html> 
