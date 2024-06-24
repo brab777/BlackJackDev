@@ -1,4 +1,3 @@
-var socket = io();
 let info = {};
 const backendUrl = `${window.location.protocol}//${window.location.hostname}`; //'https://rngbj.kasoom.com/';
 const backendUrl2  = window.location.origin
@@ -23,6 +22,10 @@ function tryReconnect(disconnectTIme) {
 }
 
 //------------------------------------------------------------------------------------------------------------------Socket.on
+
+const socket = io(backendUrl, {
+        withCredentials: true
+});
 
 socket.on('disconnect', (reason) => {
     console.log("Disconnected: ", reason);
