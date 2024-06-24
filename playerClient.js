@@ -128,7 +128,9 @@ async function activateGame(token, operator = '') {
             operator: operator,
         }),
         headers: {
-            "Content-type": "application/json; charset=UTF-8"
+            'Content-type': 'application/json; charset=UTF-8',
+	    'access-control-allow-credentials' : true,
+	    'withCredentials' : true
         }
     },);
 
@@ -147,7 +149,9 @@ const fetchRequest = async (command, method, body) => {
         const res = await fetch(`${backendUrl}api/${command}`, {
             method: method,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=UTF-8',
+		'access-control-allow-credentials' : true,
+	        'withCredentials' : true
             },
             body: JSON.stringify(body)
         })
