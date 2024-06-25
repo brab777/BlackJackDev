@@ -1,128 +1,182 @@
-<!DOCTYPE html>
-<html lang="en-us">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Casino Blackjack</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <link rel="manifest" href="manifest.webmanifest">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emscripten/2.0.31/system.js"></script>
-</head>
-<body>
-    <div id="unity-container">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-    </div>
-<script>  
-      XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
-      var newOpen = function(_, url) {  
-        var original = this.originalOpen.apply(this, arguments);  
-        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {  
-          this.withCredentials = true;  
-        }  
+<html>
+    <header>
+        <script src="/socket.io/socket.io.js"></script>       
      
-        return original;  
-      }  
-      XMLHttpRequest.prototype.open = newOpen;  
-</script>
-      
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    
-<script>  
-    XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
-    var newOpen = function(_, url) {  
-        var original = this.originalOpen.apply(this, arguments);  
-        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {  
-            this.withCredentials = true;  
-        }  
-        return original;  
-    }  
-    XMLHttpRequest.prototype.open = newOpen;  
-</script>
-    
+        <style>
+               #signout,#signin {
+                display: none;
+                position: absolute;
+                right:0px;
+                font-size: 16px !important;
+            }
+            body[curUser] #signout{
+                display: inline-block;                
+            }
+            body:not([curUser]) #signin{
+                display: inline-block;               
+            }
+        </style>
+    </header>
+    <body>
+
+           
+            <span  id="signout"> <i class="">            
+                </i><span class="xicon-text" id="signInName"> </span> 
+                <a href="/googleAuth/logout/playerClient.html">sign out</a> 
+            </span>
+          <span href="/googleAuth/authTo/playerClient.html" id="signin"> 
+                <i class=""></i>
+                <a href="/googleAuth/authTo/playerClient.html" id="signInName">sign in </a>
+            </span>
+
+
+    <div style="display:inline-block;    vertical-align: top; ">
+
+            dealer key:
+            <div> <input type="password" id="dealerKey" value='AUTOMATED_PHILIPINES_ROULETTE'> </div>                   
+            player ID (format is ID!IP for example for user id 3 : 3!107.178.56.18):
+            <div> <input type="text" id="playerID" value='14!www.2vivo.com'> </div>
+            table:
+            <div> <input type="text" id="tableID" value='291'> </div>        
+            <div><button act="init" >init</button></div>
+            <div><button act="bet">bet</button><input id="betAmount"  value="1"></div>
+            <div> handNo <input id="handNo"  value="0"></div>
+            <div><button act="confirmBets">confirmBet</button></div>
+            <div><button act="next">next</button>
+            <div><button act="stand">stand</button></div>
+            <div><button act="hit">hit</button></div>
+            <div><button act="split">split</button></div>
+            <div><button act="double">double</button></div>
+            <div><button act="insurance">insurance</button></div>
+            <div><button act="evenMoney">evenMoney</button></div>
+            <div>strategy:<select act="strategy" id="strategy">
+                <option value=""></option>
+                <option value="regular">regular</option>
+                <option value="atomated_by_system">automated</option></select></div>
+            
+            <div><button act="sideBetPPair">bet perfect pair</button><input id="PPairbetAmount"  value="1"></div>
+            <div><button act="sideBet21P3">bet 21+3</button><input id="21P3betAmount"  value="1"></div>
+           
+
+
+
+    </div>        
+    <div style="display:inline-block;    vertical-align: top;    ">
+        
+           
+        <pre id="json"></pre>
+        <pre id="prjson"></pre>
+
+        
+    </div>
+    <div style="display:inline-block;    vertical-align: top;    ">
+        
+           
+            <pre id="res"></pre>
+    </div>
+           
+    </body>
+
 <script type="module">
-    
-    import * as player from './playerClient.js';
-    
-    var container = document.querySelector("#unity-container");
-    var canvas = document.querySelector("#unity-canvas");
-    var loadingBar = document.querySelector("#unity-loading-bar");
-    var progressBarFull = document.querySelector("#unity-progress-bar-full");
-    var warningBanner = document.querySelector("#unity-warning");
 
-    const backendUrl = `https://rngbj.kasoom.com/`;
+
+import * as capi from './playerClient.js';
+
     const urlParams = new URLSearchParams(window.location.search);
-    const bankID = urlParams.get('bankId');
-    const token = urlParams.get('token');
-    const operatorID = urlParams.get('operatorID');
-    const tableguid = "C8C12026C4F04EE4B5900BA017119B52";
-    const gameid = urlParams.get('gameid');
-    const initResponse = await player.activateGame(token)
-
-    console.log('wls url: ', window.location.search);
-
+    const initResponse = await capi.activateGame(urlParams.get("token"))
     if (!initResponse?.info?.userId){ 
-        alert('No user ID.')
+        alert('no user id')
     }
     
-    let strategy;
-    
-    let dealerKey = 'iqNy5YfOCk';
-    let tableID = initResponse.info.sessionId;
+
+    let dealerKey=$$("dealerKey").value;
+    let tableID=$$('tableID').value;
     let playerID= initResponse.info.userId;
-    
-    player.setPlayer(tableID, playerID);
-    
-    //------------------------------------------------------------------------------------------------------------------Listeners
-    
-    addEventListener('change',(e)=>{
+    // let seatNo=$$('seatNo').value;
+    let strategy;
+    capi.setPlayer(tableID);
 
+
+    
+
+  /*  capi.userAction('pjoin','playerID3',`${tableID}`,0,'regular')
+    setTimeout(()=>{
+        capi.userAction('pleave','playerID3',`${tableID}`,0)
+    },2000) */
+    
+   
+    addEventListener('change',(e)=>{// whay table work from itself and player should make a change??????
         let el=e.target
-
         if (el.id=='dealerKey'){
-             dealerKey=el.value;     
+            dealerKey=el.value;     
         }
         if (el.id=='playerID'){
-            playerID=el.value;  
-            player.setPlayer(tableID,playerID)
+            playerID=el.value;      
+            
+            capi.setPlayer(tableID,playerID)//????where he has tableID from?
+      
         }
         if (el.id=='tableID'){
             tableID=el.value;
-            player.setPlayer(tableID,playerID)
+            //capi.setTable(tableID);
+            capi.setPlayer(tableID,playerID)
         }
+        // if (el.id=='seatNo'){
+        //     seatNo=el.value;
+        //     capi.setTable(tableID);
+        // }
         if (el.id=='strategy'){
             strategy=el.value;
-            player.setStrategy(playerID,tableID,strategy);
+            capi.setStrategy(playerID,tableID,strategy);
         }
+    })
+
+    addEventListener('click',e=>{
+        let ect;
+        console.log('click')
+        
+        if (!e.target || !e.target.getAttribute || !(ect=e.target.getAttribute('act'))){//?????last part?
+            return;
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+
+        console.log("ZZZZZ",ect,playerID,tableID)
+        let p=(
+            ect == 'bet' ? capi.BetApi(playerID,tableID,$$('betAmount').value,$$('handNo').value) :
+            ect == 'init' ? capi.activateGame(urlParams.get("token")) ://
+            ect == 'stand' ? capi.StandApi(playerID,tableID) :
+            ect == 'hit' ? capi.HitApi(playerID,tableID) :
+            ect == 'split' ? capi.splitApi(playerID,tableID) :
+            ect == 'double' ? capi.DoubleApi(playerID,tableID) :
+            ect == 'insurance' ? capi.insuranceApi(playerID,tableID, $$('handNo').value) :
+            ect == 'evenMoney' ? capi.evenMoney(playerID,tableID) : 
+            ect == 'sideBetPPair' ? capi.sideBetApi(playerID,tableID,$$('PPairbetAmount').value,$$('handNo').value,"sideBetPpair") :
+            ect == 'sideBet21P3' ? capi.sideBetApi(playerID,tableID,$$('21P3betAmount').value,$$('handNo').value,"sideBet21p3") : 
+            ect == 'next' ? capi.next(playerID,tableID) :
+            ect == 'confirmBets' ? capi.confirmBets(playerID,tableID) : 0
+        );
+        
+        p.then((res)=>{$$("res").innerHTML=JSON.stringify(res, undefined, 2)})
     })
 
     addEventListener('message',e=>{
-        if (!e.data || !e.data.newStatus){
-            console.log("No data to show.")
-            console.log(e)
-            console.log(e.data)
+        if (!e.data || !e.data.newStatus){ //not a new state message from capi
             return;
         }
-        console.log(e.data)
+       // console.log(e.data)
         renderState(e.data)
-    })
 
-    window.addEventListener('offline', () => {
-      console.log('The network connection has been lost.');
+        //capi.getProfile().then(res=>{
+        //    if (res.displayName == document.body.getAttribute("curUser")){return;}; //no change
+//
+        //    if (res.displayName){
+        //        $$("signInName").textContent=`${res.displayName}`;
+        //        document.body.setAttribute("curUser",res.displayName);
+        //    }else{
+        //        document.body.removeAttribute("curUser");
+        //    }
+        //})
     })
-
-    window.addEventListener('online', () => {
-      console.log('The network connection has been restored.');
-    })
-
-//------------------------------------------------------------------------------------------------------------------Unity/Other Functions
 
     function renderState(state){
         if(!state.newPrivatestat){
@@ -131,81 +185,18 @@
         else{
             $$("prjson").innerHTML=JSON.stringify(state, undefined, 2)
 
-        } 
+        }    
+
     }
+
+    // function postMessege(msg, str){
+    //     $$("res").innerHTML=JSON.stringify(res, undefined, 2)
+
+    // }
+
+
 
     function $$(str){return document.getElementById(str)}
 
-    // Shows a temporary message banner/ribbon for a few seconds, or
-    // a permanent error message on top of the canvas if type=='error'.
-    // If type=='warning', a yellow highlight color is used.
-    // Modify or remove this function to customize the visually presented
-    // way that non-critical warnings and error messages are presented to the
-    // user.
-
-    function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-            warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-            if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-            setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-            }, 5000);
-        }
-        updateBannerVisibility();
-    }
-
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/Blackjack Build.loader.js";
-    var config = {
-    dataUrl: buildUrl + "/Blackjack Build.data",
-    frameworkUrl: buildUrl + "/Blackjack Build.framework.js",
-    
-    codeUrl: buildUrl + "/Blackjack Build.wasm",
-    streamingAssetsUrl: "StreamingAssets",
-    companyName: "Vivo",
-    productName: "Casino Blackjack",
-    productVersion: "1.0",
-    showBanner: unityShowBanner,
-    };
-
-    // By default Unity keeps WebGL canvas render target size matched with
-    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-    // Set this to false if you want to decouple this synchronization from
-    // happening inside the engine, and you would instead like to size up
-    // the canvas DOM size and WebGL render target sizes yourself.
-    // config.matchWebGLToCanvasSize = false;
-
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-    }
-
-    loadingBar.style.display = "block";
-
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-    createUnityInstance(canvas, config, (progress) => {
-        progressBarFull.style.width = 100 * progress + "%";
-    }).then((unityInstance) => {
-        loadingBar.style.display = "none";          
-        const currentUrl = window.location.href;
-        //unityInstance.SendMessage('GameManager','SendToken',currentUrl);      
-    }).catch((message) => {
-        alert(message);
-    });
-    };
-    document.body.appendChild(script);
 </script>
-</body>
 </html> 
