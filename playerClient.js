@@ -1,10 +1,12 @@
 //how to throw a msg to the screen from this page
 
-var socket = io();
 let info = {};
-const backendUrl = `${window.location.protocol}//${window.location.hostname}`; //'http://bj.vivoplace.com';
+const backendUrl = `https://rngbj.kasoom.com/`;
 const backendUrl2  = window.location.origin
-
+const socket = io(backendUrl, {
+        withCredentials: true,
+	transports: ['websocket']
+});
 console.log('backendUrl', backendUrl)
 function tryReconnect(disconnectTIme) {
 
