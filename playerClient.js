@@ -1,101 +1,69 @@
+//how to throw a msg to the screen from this page
+
+var socket = io();
 let info = {};
-const backendUrl = `https://rngbj.kasoom.com/`;
+const backendUrl = `${window.location.protocol}//${window.location.hostname}`; //'http://bj.vivoplace.com';
 const backendUrl2  = window.location.origin
 
-console.log("Backend URL: ", backendUrl)
-
-//------------------------------------------------------------------------------------------------------------------Socket.on
-
-const socket = io(backendUrl, {
-        withCredentials: true,
-	transports: ['websocket']
-});
-
-socket.on('disconnect', (reason) => {
-    console.log("Disconnected: ", reason);
-    if (reason === "io server disconnect") {
-      // Server disconnected the socket
-      console.log("Server initiated disconnection.");
-      tryReconnect(new Date());
-    } else if (reason === "transport close" || reason === "ping timeout") {
-      // Network issues or client-side disconnects
-      console.log("Client-side disconnection or network issue.");
-      tryReconnect(new Date());
-    } else {
-      console.log("Unknown disconnection reason:", reason);
-    }
-})
-
-socket.on('newState', data => {
-    console.log("NewState Called...");
-    data.newStatus = true;
-    data.type = 'newState';
-    console.log(data);
-    postMessage(data, "*");
-})
-
-socket.on('newClientStatus', data => {
-    console.log('newClientStatus', data)
-    data.newStatus = true;
-    data.newPrivatestat = true;
-    postMessage(data, "*");
-})
-
-socket.on('NewBalance', () => {
-    console.log('New balance function called!')
-})
-
-socket.on("showMess", data => {
-    console.log("Posting message: ", data)
-    data.type = "showMess";
-    postMessage(data, '*')
-})
-
-socket.on('message', (message) => {
-    console.log('Received message:', message);
-    // Handle incoming messages from the WebSocket server
-    if (typeof message === 'string') {
-        const data = JSON.parse(message);
-        if (data.action === 'init_response') {
-            setUser(data.info.userId);
-            setPlayer(data.info.sessionId);
-        }
-    }
-});
-
-socket.on('connect_error', (error) => {
-    console.log("Connection error:", error.message);
-});
-
-socket.on('error', (error) => {
-    console.error('WebSocket Error:', error);
-});
-
-socket.on('reconnect_error', (error) => {
-    console.log("Reconnection error:", error.message);
-});
-
-//------------------------------------------------------------------------------------------------------------------Socket Functions
-
+console.log('backendUrl', backendUrl)
 function tryReconnect(disconnectTIme) {
 
-    console.log("Trying to reconnect... ", socket.connected)
+    console.log("ZZZZ tryReconnect", socket.connected)
     if (!socket.connected) {
         socket.connect();
         setTimeout(() => {
             tryReconnect()
-        }, 4000)
+        }, 300)
 
     } else {
-        console.log("Connection reestablished!")
-        setPlayer(info.tableID, info.playerID)
+        //location.reload();
+        // userAction('getClientRec',playerID,tableID)//@@
+        console.log('connecte again guive my rec!!')
+        setPlayer(info.tableID, info.playerID) //@@@
+
     }
 }
 
-//------------------------------------------------------------------------------------------------------------------Player Functions
+socket.on('disconnect', (reason) => {
+    console.log("zzzz disconnect zzz", reason)
+    if (reason == "transport close") { // || reason=="transport error"){        
+        tryReconnect(new Date())
+    }
+})
 
-function setPlayer(table) { //Should sent playerID too?
-    console.log('Setting player with table: ', table)
+
+socket.on('newState', data => {
+    data.newStatus = true; //its a socket new state!!
+    data.type = 'newState'
+    console.log(data)
+    postMessage(data, "*")
+})
+
+
+socket.on('newClientStatus', data => {
+    console.log('newClientStatus', data)
+    data.newStatus = true; //its a socket new state!!
+    data.newPrivatestat = true;
+    postMessage(data, "*")
+
+})
+
+
+socket.on('NewBalance', () => {
+    console.log('balance!!!   ')
+})
+
+
+
+socket.on("showMess", data => {
+    console.log("zzzz MESSSSssssssssssssssssssssssssssssssssssssssssssSS ", data)
+    data.type = "showMess"; //its a socket new state!!
+    postMessage(data, '*')
+})
+
+
+function setPlayer(table) { //@@i should sent playerID too.
+    console.log('set ', table)
     let mess = {
         type: 'delaerAction',
         command: 'setTable',
@@ -103,23 +71,19 @@ function setPlayer(table) { //Should sent playerID too?
     }
     postMessage(mess, '*');
     info.tableID = table;
-    socket.emit('setPlayer', mess, (response) => {
-		console.log('Response: ', response);   
-        if (response && response.error) {
-        console.log('Emit error: ', response.error);
-        } else {
-        console.log('Emit successful: ', response);
-        }
-    });
+    socket.emit('setPlayer', mess); //now I will be notified for events on this table
 }
+
 
 function setUser(player) {
     info.playerID = player;
 }
 
+
+
 async function activateGame(token, operator = '') {
-    const url = `${backendUrl}api/init`;
-    console.log("Posting token: ", url, token)
+    const url = `${backendUrl2}/api/init`;
+    console.log("zzz posting toekn:", url, token)
 
     let res = await fetch(url, {
         method: "POST",
@@ -128,36 +92,32 @@ async function activateGame(token, operator = '') {
             operator: operator,
         }),
         headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-	    'access-control-allow-credentials' : true,
-	    'withCredentials' : true
+            "Content-type": "application/json; charset=UTF-8"
         }
     },);
 
     let finalRes = await res.json()
     if (finalRes.status == "OK") {
-        //setPlayer(finalRes.info.sessionId);
+        // setPlayer();
     }
-    console.log("Activation response: ", finalRes)
+    console.log("AFTER INIT", finalRes)
     return finalRes;
 }
 
 
 const fetchRequest = async (command, method, body) => {
     try {
-        console.log('Fetching: ', `${backendUrl}api/${command}`)
-        const res = await fetch(`${backendUrl}api/${command}`, {
+        console.log('fetching', `${backendUrl}/api/${command}`)
+        const res = await fetch(`${backendUrl}/api/${command}`, {
             method: method,
             headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-		'access-control-allow-credentials' : true,
-	        'withCredentials' : true
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(body)
         })
         return await res.json()
     } catch (err) {
-        console.log('Error fetching: ', err)
+        console.log('error fetching', err)
         return {
             status: 'azErr',
             errCode: 'fetchErr'
@@ -176,7 +136,7 @@ const call = async (command, method, body) => {
                 return await call(command, method, body)
             }
         }
-        console.log('Fetch error: ', res)
+        console.log('error', res)
     }
     return res
 };
@@ -184,7 +144,7 @@ const call = async (command, method, body) => {
 
 async function init(token) {
     const res = await fetchRequest(`init?token=${token}`, 'GET')
-    console.log('Init response: ', res)
+    console.log('init', res)
     return res
 }
 
@@ -233,9 +193,13 @@ const TotalApi = (playerId, tableId) => {
     return call(`total/${playerId}/${tableId}`, 'GET')
 }
 
+
+
 const UndoApi = () => {
 
 }
+
+
 
 const DealNowApi = (playerId, tableId, hands) => {
     return call(`confirmBets/${playerId}/${tableId}`, 'POST', hands)
@@ -249,6 +213,7 @@ const insuranceApi = (playerId, tableId, handNo) => {
     return call(`insurance/${tableId}/${playerId}/${handNo}`, 'GET')
 
 }
+
 
 export {
     setUser,
