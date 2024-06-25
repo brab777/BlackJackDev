@@ -5,8 +5,7 @@ const backendUrl = `https://rngbj.kasoom.com/`;
 const backendUrl2  = window.location.origin
 
 const socket = io(backendUrl, {
-        withCredentials: true,
-	transports: ['websocket']
+        withCredentials: true
 });
 
 console.log('backendUrl', backendUrl)
