@@ -1,7 +1,7 @@
 let info = {};
 const backendUrl = `https://rngbj.kasoom.com/`;
 const backendUrl2  = window.location.origin
-
+ 
 console.log("Backend URL: ", backendUrl)
 
 //------------------------------------------------------------------------------------------------------------------Socket.on
