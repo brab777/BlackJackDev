@@ -127,6 +127,7 @@ async function activateGame(token, operator = '') {
             token: token,
             operator: operator,
         }),
+	    credentials: 'include',
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
 	    'access-control-allow-credentials' : true,
@@ -153,6 +154,7 @@ const fetchRequest = async (command, method, body) => {
 		'access-control-allow-credentials' : true,
 	        'withCredentials' : true
             },
+		credentials: 'include',
             body: JSON.stringify(body)
         })
         return await res.json()
