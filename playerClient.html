@@ -1,0 +1,202 @@
+<html>
+    <header>
+        <script src="/socket.io/socket.io.js"></script>       
+     
+        <style>
+               #signout,#signin {
+                display: none;
+                position: absolute;
+                right:0px;
+                font-size: 16px !important;
+            }
+            body[curUser] #signout{
+                display: inline-block;                
+            }
+            body:not([curUser]) #signin{
+                display: inline-block;               
+            }
+        </style>
+    </header>
+    <body>
+
+           
+            <span  id="signout"> <i class="">            
+                </i><span class="xicon-text" id="signInName"> </span> 
+                <a href="/googleAuth/logout/playerClient.html">sign out</a> 
+            </span>
+          <span href="/googleAuth/authTo/playerClient.html" id="signin"> 
+                <i class=""></i>
+                <a href="/googleAuth/authTo/playerClient.html" id="signInName">sign in </a>
+            </span>
+
+
+    <div style="display:inline-block;    vertical-align: top; ">
+
+            dealer key:
+            <div> <input type="password" id="dealerKey" value='AUTOMATED_PHILIPINES_ROULETTE'> </div>                   
+            player ID (format is ID!IP for example for user id 3 : 3!107.178.56.18):
+            <div> <input type="text" id="playerID" value='14!www.2vivo.com'> </div>
+            table:
+            <div> <input type="text" id="tableID" value='291'> </div>        
+            <div><button act="init" >init</button></div>
+            <div><button act="bet">bet</button><input id="betAmount"  value="1"></div>
+            <div> handNo <input id="handNo"  value="0"></div>
+            <div><button act="confirmBets">confirmBet</button></div>
+            <div><button act="next">next</button>
+            <div><button act="stand">stand</button></div>
+            <div><button act="hit">hit</button></div>
+            <div><button act="split">split</button></div>
+            <div><button act="double">double</button></div>
+            <div><button act="insurance">insurance</button></div>
+            <div><button act="evenMoney">evenMoney</button></div>
+            <div>strategy:<select act="strategy" id="strategy">
+                <option value=""></option>
+                <option value="regular">regular</option>
+                <option value="atomated_by_system">automated</option></select></div>
+            
+            <div><button act="sideBetPPair">bet perfect pair</button><input id="PPairbetAmount"  value="1"></div>
+            <div><button act="sideBet21P3">bet 21+3</button><input id="21P3betAmount"  value="1"></div>
+           
+
+
+
+    </div>        
+    <div style="display:inline-block;    vertical-align: top;    ">
+        
+           
+        <pre id="json"></pre>
+        <pre id="prjson"></pre>
+
+        
+    </div>
+    <div style="display:inline-block;    vertical-align: top;    ">
+        
+           
+            <pre id="res"></pre>
+    </div>
+           
+    </body>
+
+<script type="module">
+
+
+import * as capi from './playerClient.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const initResponse = await capi.activateGame(urlParams.get("token"))
+    if (!initResponse?.info?.userId){ 
+        alert('no user id')
+    }
+    
+
+    let dealerKey=$$("dealerKey").value;
+    let tableID=$$('tableID').value;
+    let playerID= initResponse.info.userId;
+    // let seatNo=$$('seatNo').value;
+    let strategy;
+    capi.setPlayer(tableID);
+
+
+    
+
+  /*  capi.userAction('pjoin','playerID3',`${tableID}`,0,'regular')
+    setTimeout(()=>{
+        capi.userAction('pleave','playerID3',`${tableID}`,0)
+    },2000) */
+    
+   
+    addEventListener('change',(e)=>{// whay table work from itself and player should make a change??????
+        let el=e.target
+        if (el.id=='dealerKey'){
+            dealerKey=el.value;     
+        }
+        if (el.id=='playerID'){
+            playerID=el.value;      
+            
+            capi.setPlayer(tableID,playerID)//????where he has tableID from?
+      
+        }
+        if (el.id=='tableID'){
+            tableID=el.value;
+            //capi.setTable(tableID);
+            capi.setPlayer(tableID,playerID)
+        }
+        // if (el.id=='seatNo'){
+        //     seatNo=el.value;
+        //     capi.setTable(tableID);
+        // }
+        if (el.id=='strategy'){
+            strategy=el.value;
+            capi.setStrategy(playerID,tableID,strategy);
+        }
+    })
+
+    addEventListener('click',e=>{
+        let ect;
+        console.log('click')
+        
+        if (!e.target || !e.target.getAttribute || !(ect=e.target.getAttribute('act'))){//?????last part?
+            return;
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+
+        console.log("ZZZZZ",ect,playerID,tableID)
+        let p=(
+            ect == 'bet' ? capi.BetApi(playerID,tableID,$$('betAmount').value,$$('handNo').value) :
+            ect == 'init' ? capi.activateGame(urlParams.get("token")) ://
+            ect == 'stand' ? capi.StandApi(playerID,tableID) :
+            ect == 'hit' ? capi.HitApi(playerID,tableID) :
+            ect == 'split' ? capi.splitApi(playerID,tableID) :
+            ect == 'double' ? capi.DoubleApi(playerID,tableID) :
+            ect == 'insurance' ? capi.insuranceApi(playerID,tableID, $$('handNo').value) :
+            ect == 'evenMoney' ? capi.evenMoney(playerID,tableID) : 
+            ect == 'sideBetPPair' ? capi.sideBetApi(playerID,tableID,$$('PPairbetAmount').value,$$('handNo').value,"sideBetPpair") :
+            ect == 'sideBet21P3' ? capi.sideBetApi(playerID,tableID,$$('21P3betAmount').value,$$('handNo').value,"sideBet21p3") : 
+            ect == 'next' ? capi.next(playerID,tableID) :
+            ect == 'confirmBets' ? capi.confirmBets(playerID,tableID) : 0
+        );
+        
+        p.then((res)=>{$$("res").innerHTML=JSON.stringify(res, undefined, 2)})
+    })
+
+    addEventListener('message',e=>{
+        if (!e.data || !e.data.newStatus){ //not a new state message from capi
+            return;
+        }
+       // console.log(e.data)
+        renderState(e.data)
+
+        //capi.getProfile().then(res=>{
+        //    if (res.displayName == document.body.getAttribute("curUser")){return;}; //no change
+//
+        //    if (res.displayName){
+        //        $$("signInName").textContent=`${res.displayName}`;
+        //        document.body.setAttribute("curUser",res.displayName);
+        //    }else{
+        //        document.body.removeAttribute("curUser");
+        //    }
+        //})
+    })
+
+    function renderState(state){
+        if(!state.newPrivatestat){
+            $$("json").innerHTML=JSON.stringify(state, undefined, 2)
+        }
+        else{
+            $$("prjson").innerHTML=JSON.stringify(state, undefined, 2)
+
+        }    
+
+    }
+
+    // function postMessege(msg, str){
+    //     $$("res").innerHTML=JSON.stringify(res, undefined, 2)
+
+    // }
+
+
+
+    function $$(str){return document.getElementById(str)}
+
+</script>
+</html> 
