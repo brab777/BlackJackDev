@@ -20,12 +20,12 @@
     "swagger-ui-express": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
-  "homepage": "https://github.com/brab777/BlackJackDev/tree/main/blackjack-app",
+  "homepage": "https://brab777.github.io/BlackJackDev",
   "scripts": {
     "start": "react-scripts start",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build": "react-scripts build",
+    "build": "react-scripts build --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
