@@ -13,7 +13,7 @@
     "nocache": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "^5.0.1",
     "redlock": "^5.0.0-beta.2",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
