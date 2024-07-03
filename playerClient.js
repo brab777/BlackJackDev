@@ -220,7 +220,7 @@ const stateHandApi = (playerId, tableId) => {
 
 const BetApi = (playerId, tableId, newbetAmount, handId) => {
     console.log('Fetching BETAPI: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
-    return call(`bet/${playerId}/${tableId}/${handId}/${newbetAmount}`, 'GET')
+    return call(`bet/${info.playerID}/${info.tableID}/${handId}/${newbetAmount}`, 'GET')
 }
 
 const sideBetApi = (playerId, tableId, newbetAmount, handId, betType) => {
