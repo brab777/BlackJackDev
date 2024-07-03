@@ -158,7 +158,7 @@ const fetchRequest = async (command, method, body) => {
             method: method,
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
-                'Authorization': `Bearer ${Gtoken}`,
+                'Authorization': 'Bearer ${Gtoken}',
 		        'access-control-allow-credentials' : true
             },
             credentials: 'include',
@@ -219,6 +219,7 @@ const stateHandApi = (playerId, tableId) => {
 }
 
 const BetApi = (playerId, tableId, newbetAmount, handId) => {
+    console.log('Fetching BETAPI: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
     return call(`bet/${playerId}/${tableId}/${handId}/${newbetAmount}`, 'GET')
 }
 
