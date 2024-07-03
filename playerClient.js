@@ -162,8 +162,7 @@ const fetchRequest = async (command, method, body) => {
 		        'access-control-allow-credentials' : true
             },
             credentials: 'include',
-            body: method === 'GET' ? undefined : JSON.stringify(body)
-            //body: JSON.stringify(body)
+            body: JSON.stringify(body)
         })
         if (!res.ok) {
             console.log('Response not OK: ', res.status, res.statusText);
