@@ -203,19 +203,19 @@ async function init(token) {
 }
 
 const HitApi = async (playerId, tableId) => {
-    return await call(`hit/${playerId}/${tableId}`, 'GET')
+    return await call(`hit/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const splitApi = (playerId, tableId) => {
-    return call(`split/${playerId}/${tableId}`, 'GET')
+    return call(`split/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const DoubleApi = (playerId, tableId) => {
-    return call(`double/${playerId}/${tableId}`, 'GET')
+    return call(`double/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const stateHandApi = (playerId, tableId) => {
-    return call(`stateHand/${playerId}/${tableId}`, 'GET')
+    return call(`stateHand/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const BetApi = (playerId, tableId, newbetAmount, handId) => {
@@ -224,28 +224,28 @@ const BetApi = (playerId, tableId, newbetAmount, handId) => {
 }
 
 const sideBetApi = (playerId, tableId, newbetAmount, handId, betType) => {
-    return call(`sideBet/${playerId}/${tableId}/${handId}/${newbetAmount}/${betType}`, 'GET')
+    return call(`sideBet/${info.playerID}/${info.tableID}/${handId}/${newbetAmount}/${betType}`, 'GET')
 }
 
 const StandApi = (playerId, tableId) => {
-    return call(`stand/${playerId}/${tableId}`, 'GET')
+    return call(`stand/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const next = (playerId, tableId) => {
-    return call(`next/${playerId}/${tableId}`, 'GET')
+    return call(`next/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const confirmBets = (playerId, tableId) => {
-    return call(`confirmBets/${playerId}/${tableId}`, 'GET')
+    return call(`confirmBets/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 
 const isSplitApi = (playerId, tableId) => {
-    return call(`isSplit/${playerId}/${tableId}`, 'GET')
+    return call(`isSplit/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const TotalApi = (playerId, tableId) => {
-    return call(`total/${playerId}/${tableId}`, 'GET')
+    return call(`total/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 const UndoApi = () => {
@@ -253,7 +253,7 @@ const UndoApi = () => {
 }
 
 const DealNowApi = (playerId, tableId, hands) => {
-    return call(`confirmBets/${playerId}/${tableId}`, 'POST', hands)
+    return call(`confirmBets/${info.playerID}/${info.tableID}`, 'POST', hands)
 }
 
 const CreateAllApi = () => {
@@ -261,7 +261,7 @@ const CreateAllApi = () => {
 }
 
 const insuranceApi = (playerId, tableId, handNo) => {
-    return call(`insurance/${tableId}/${playerId}/${handNo}`, 'GET')
+    return call(`insurance/${info.playerID}/${info.tableID}/${handNo}`, 'GET')
 
 }
 
