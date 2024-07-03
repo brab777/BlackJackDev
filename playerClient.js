@@ -124,7 +124,7 @@ function setUser(player) {
 }
 
 async function activateGame(token, operator = '') {
-    const url = `${backendUrl}api/init`;
+    const url = `${backendUrl}/api/init`;
     console.log("Posting token to init: ", url, token)
     try {
         let res = await fetch(url, {
@@ -166,8 +166,8 @@ async function activateGame(token, operator = '') {
 
 const fetchRequest = async (command, method, body) => {
     try {
-        console.log('Fetching: ', `${backendUrl}api/${command}`, 'token', Gtoken)
-        const res = await fetch(`${backendUrl}api/${command}`, {
+        console.log('Fetching: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
+        const res = await fetch(`${backendUrl}/api/${command}`, {
             method: method,
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
