@@ -109,14 +109,7 @@ function setPlayer(table, token) { //Should sent playerID too?
     postMessage(mess, '*');
     info.tableID = table;
     console.log('Table message: ', table, mess)
-    socket.emit('setPlayer', mess, (response) => {
-		console.log('Response: ', response);   
-        if (response && response.error) {
-        console.log('Emit error: ', response.error);
-        } else {
-        console.log('Emit successful: ', response);
-        }
-    });
+    socket.emit('setPlayer', mess);
 }
 
 function setUser(player) {
@@ -159,6 +152,7 @@ async function activateGame(token, operator = '') {
 
 
 const fetchRequest = async (command, method, body) => {
+    console.log('Fetching: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
     try {
         console.log('Fetching: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
         const res = await fetch(`${backendUrl}/api/${command}`, {
