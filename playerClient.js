@@ -135,7 +135,7 @@ async function activateGame(token, operator = '') {
             }),
 	        credentials: 'include',
             headers: {
-                'Content-type': 'application/json; charset=UTF-8'
+                'Content-type': 'application/json; charset=UTF-8',
 	            'access-control-allow-credentials' : true,
 	            //'withCredentials' : true
             }
