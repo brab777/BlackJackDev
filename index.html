@@ -200,7 +200,7 @@
     }).then((unityInstance) => {
         loadingBar.style.display = "none";          
         const currentUrl = window.location.href;
-        //unityInstance.SendMessage('GameManager','SendToken',currentUrl);      
+        unityInstance.SendMessage('GameManager','SendToken', currentUrl);      
     }).catch((message) => {
         alert(message);
     });
