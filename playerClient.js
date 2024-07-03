@@ -98,7 +98,7 @@ function tryReconnect(disconnectTIme) {
 
 //------------------------------------------------------------------------------------------------------------------Player Functions
 
-function setPlayer(table) { //Should sent playerID too?
+function setPlayer(table, token) { //Should sent playerID too?
     console.log('Setting player with table: ', table)
     let mess = {
         type: 'delaerAction',
