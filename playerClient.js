@@ -126,20 +126,29 @@ function setUser(player) {
 async function activateGame(token, operator = '') {
     const url = `${backendUrl}api/init`;
     console.log("Posting token to init: ", url, token)
+    try {
+        let res = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                token: token,
+                operator: operator
+            }),
+	        credentials: 'include',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+	            'access-control-allow-credentials' : true,
+	            //'withCredentials' : true
+            }
+        },);
 
-    let res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-            token: token,
-            operator: operator,
-        }),
-	    credentials: 'include',
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-	        //'access-control-allow-credentials' : true,
-	        //'withCredentials' : true
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
         }
-    },);
+
+    } catch (error) {
+        console.error("Failed to fetch: ", error);
+        throw error; // Optionally, rethrow the error if you want to handle it elsewhere
+    }
 
     let finalRes = await res.json()
     Gtoken = finalRes.token;
