@@ -154,7 +154,6 @@ async function activateGame(token, operator = '') {
 const fetchRequest = async (command, method, body) => {
     console.log('Fetching: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
     try {
-        console.log('Fetching: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
         const res = await fetch(`${backendUrl}/api/${command}`, {
             method: method,
             headers: {
@@ -162,9 +161,14 @@ const fetchRequest = async (command, method, body) => {
                 'Authorization': `Bearer ${Gtoken}`,
 		        'access-control-allow-credentials' : true
             },
-		    credentials: 'include',
-            body: JSON.stringify(body)
+            credentials: 'include',
+            body: method === 'GET' ? undefined : JSON.stringify(body)
+            //body: JSON.stringify(body)
         })
+        if (!res.ok) {
+            console.log('Response not OK: ', res.status, res.statusText);
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
         return await res.json()
     } catch (err) {
         console.log('Error fetching: ', err)
