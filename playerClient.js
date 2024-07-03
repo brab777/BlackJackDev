@@ -1,6 +1,7 @@
 let info = {};
-const backendUrl = `https://rngbj.kasoom.com/`;
-const backendUrl2  = window.location.origin
+const backendUrl = 'https://rngbj.kasoom.com';
+const backendUrl2 = 'https://rngbj.kasoom.com';
+let Gtoken = '';
 
 console.log("Backend URL: ", backendUrl)
 
@@ -11,11 +12,6 @@ const socket = io(backendUrl, {
     upgrade: false,
     transports: ['websocket']
 });
-
-let info = {};
-const backendUrl = `https://rngbj.kasoom.com`; //'http://bj.vivoplace.com';
-const backendUrl2 = 'https://rngbj.kasoom.com'
-let Gtoken = '';
 
 socket.on('disconnect', (reason) => {
     console.log("Disconnected: ", reason);
