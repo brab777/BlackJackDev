@@ -2,7 +2,7 @@ let info = {};
 const backendUrl = 'https://rngbj.kasoom.com';
 const backendUrl2 = 'https://rngbj.kasoom.com';
 let Gtoken = '';
-const socket;
+let socket = null;
 
 console.log("Backend URL: ", backendUrl)
 
