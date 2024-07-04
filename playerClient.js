@@ -148,8 +148,8 @@ async function activateGame(token, operator = '') {
     Gtoken = finalRes.token;
     console.log("Token received: ", Gtoken)
     console.log("After init: ", info.tableID, info.playerID, Gtoken)
-    setPlayer('528', Gtoken)
     CreateSocket()
+    setPlayer('528', Gtoken)
     if (finalRes.status == "OK") {
         //setPlayer();
     }
