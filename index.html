@@ -125,11 +125,10 @@
 
     function renderState(state){
         if(!state.newPrivatestat){
-            $$("json").innerHTML=JSON.stringify(state, undefined, 2)
+            document.getElementById("json").innerHTML = JSON.stringify(state, undefined, 2);
         }
         else{
-            $$("prjson").innerHTML=JSON.stringify(state, undefined, 2)
-
+            document.getElementById("prjson").innerHTML = JSON.stringify(state, undefined, 2);
         } 
     }
 
