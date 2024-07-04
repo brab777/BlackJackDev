@@ -75,7 +75,7 @@
     let strategy;
     
     let dealerKey = 'iqNy5YfOCk';
-    let tableID = initResponse.info?.tableId;
+    let tableID = '528';
     let playerID= initResponse.info?.userId;
     
     //player.setPlayer(tableID, playerID);
@@ -94,7 +94,6 @@
             player.setPlayer(tableID,playerID)
         }
         if (el.id=='tableID'){
-            tableID=el.value;
             player.setPlayer(tableID,playerID)
         }
         if (el.id=='strategy'){
