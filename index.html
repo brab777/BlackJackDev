@@ -110,6 +110,7 @@
             return;
         }
         console.log(e.data)
+        if (e.data == null) return;
         renderState(e.data)
     })
 
@@ -125,10 +126,11 @@
 
     function renderState(state){
         if(!state.newPrivatestat){
-            document.getElementById("json").innerHTML = JSON.stringify(state, undefined, 2);
+            $$("json").innerHTML=JSON.stringify(state, undefined, 2)
         }
         else{
-            document.getElementById("prjson").innerHTML = JSON.stringify(state, undefined, 2);
+            $$("prjson").innerHTML=JSON.stringify(state, undefined, 2)
+
         } 
     }
 
