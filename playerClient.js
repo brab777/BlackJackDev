@@ -242,6 +242,7 @@ const next = () => {
 }
 
 const confirmBets = () => {
+    console.log("Llego3")
     return call(`confirmBets/${info.playerID}/${info.tableID}`, 'GET')
 }
 
