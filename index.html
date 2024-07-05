@@ -164,6 +164,17 @@
         updateBannerVisibility();
     }
 
+    //------
+
+    function BetApi(newbetAmount, handId) {
+        player.BetApi(newbetAmount, handId);
+    }
+
+    function confirmBets() {
+        player.confirmBets();
+    }
+
+    //------
     var buildUrl = "Build";
     var loaderUrl = buildUrl + "/Blackjack Build.loader.js";
     var config = {
@@ -203,7 +214,7 @@
     }).then((unityInstance) => {
         loadingBar.style.display = "none";          
         const currentUrl = window.location.href;
-        unityInstance.SendMessage('GameManager','SendToken', currentUrl);      
+        unityInstance.SendMessage('GameManager', 'ReceiveTotalBalance', initResponse?.info?.Balance);
     }).catch((message) => {
         alert(message);
     });
