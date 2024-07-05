@@ -208,49 +208,49 @@ async function init(token) {
     return res
 }
 
-const HitApi = async (playerId, tableId) => {
+const HitApi = async () => {
     return await call(`hit/${info.playerID}/${info.tableID}`, 'GET')
 }
 
-const splitApi = (playerId, tableId) => {
+const splitApi = () => {
     return call(`split/${info.playerID}/${info.tableID}`, 'GET')
 }
 
-const DoubleApi = (playerId, tableId) => {
+const DoubleApi = () => {
     return call(`double/${info.playerID}/${info.tableID}`, 'GET')
 }
 
-const stateHandApi = (playerId, tableId) => {
+const stateHandApi = () => {
     return call(`stateHand/${info.playerID}/${info.tableID}`, 'GET')
 }
 
-const BetApi = (playerId, tableId, newbetAmount, handId) => {
+const BetApi = (newbetAmount, handId) => {
     console.log('Fetching BETAPI: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
     return call(`bet/${info.playerID}/${info.tableID}/${handId}/${newbetAmount}`, 'GET')
 }
 
-const sideBetApi = (playerId, tableId, newbetAmount, handId, betType) => {
+const sideBetApi = (newbetAmount, handId, betType) => {
     return call(`sideBet/${info.playerID}/${info.tableID}/${handId}/${newbetAmount}/${betType}`, 'GET')
 }
 
-const StandApi = (playerId, tableId) => {
+const StandApi = () => {
     return call(`stand/${info.playerID}/${info.tableID}`, 'GET')
 }
 
-const next = (playerId, tableId) => {
+const next = () => {
     return call(`next/${info.playerID}/${info.tableID}`, 'GET')
 }
 
-const confirmBets = (playerId, tableId) => {
+const confirmBets = () => {
     return call(`confirmBets/${info.playerID}/${info.tableID}`, 'GET')
 }
 
 
-const isSplitApi = (playerId, tableId) => {
+const isSplitApi = () => {
     return call(`isSplit/${info.playerID}/${info.tableID}`, 'GET')
 }
 
-const TotalApi = (playerId, tableId) => {
+const TotalApi = () => {
     return call(`total/${info.playerID}/${info.tableID}`, 'GET')
 }
 
@@ -258,7 +258,7 @@ const UndoApi = () => {
 
 }
 
-const DealNowApi = (playerId, tableId, hands) => {
+const DealNowApi = (hands) => {
     return call(`confirmBets/${info.playerID}/${info.tableID}`, 'POST', hands)
 }
 
@@ -266,7 +266,7 @@ const CreateAllApi = () => {
 
 }
 
-const insuranceApi = (playerId, tableId, handNo) => {
+const insuranceApi = (handNo) => {
     return call(`insurance/${info.playerID}/${info.tableID}/${handNo}`, 'GET')
 
 }
