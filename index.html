@@ -217,6 +217,7 @@
         loadingBar.style.display = "none";          
         const currentUrl = window.location.href;
         unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
+        BetApi(1, 1)
     }).catch((message) => {
         alert(message);
     });
