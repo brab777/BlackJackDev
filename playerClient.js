@@ -3,6 +3,7 @@ const backendUrl = 'https://rngbj.kasoom.com';
 const backendUrl2 = 'https://rngbj.kasoom.com';
 let Gtoken = '';
 let socket = null;
+var unityInstance;
 
 console.log("Backend URL: ", backendUrl)
 
@@ -46,6 +47,7 @@ function CreateSocket()
         console.log('newClientStatus', data)
         data.newStatus = true;
         data.newPrivatestat = true;
+        callUnityFunctionByName('GameManager', 'HandleInit', JSON.stringify(data));
         postMessage(data, "*");
     })
 
@@ -201,6 +203,17 @@ const call = async (command, method, body) => {
     return res
 };
 
+function setUnityInstance(unityInstanceRef) {
+    unityInstance = unityInstanceRef;
+}
+
+function callUnityFunctionByName(GOName, FName, dataU) {
+    if (unityInstance) {
+        unityInstance.SendMessage(GOName, FName, JSON.stringify(dataU));
+    } else {
+        console.error("Unity instance is not initialized.");
+    }
+}
 
 async function init(token) {
     const res = await fetchRequest(`init?token=${token}`, 'GET')
