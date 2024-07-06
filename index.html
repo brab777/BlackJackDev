@@ -216,7 +216,7 @@
     }).then((unityInstance) => {
         loadingBar.style.display = "none";          
         const currentUrl = window.location.href;
-        unityInstance.SendMessage('GameManager', 'ReceiveTotalBalance', initResponse?.info?.Balance);
+        unityInstance.SendMessage('GameManager', 'HandleInit', initResponse);
     }).catch((message) => {
         alert(message);
     });
