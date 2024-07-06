@@ -121,6 +121,7 @@ function CreateSocket()
         data.newStatus = true;
         data.type = 'newState';
         console.log(data);
+        callUnityFunctionByName('GameManager', 'OnClientNewState', JSON.stringify(data));
         postMessage(data, "*");
     })
 
