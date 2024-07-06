@@ -128,7 +128,7 @@ function CreateSocket()
         console.log('newClientStatus', data)
         data.newStatus = true;
         data.newPrivatestat = true;
-        callUnityFunctionByName('GameManager', 'HandleInit', JSON.stringify(data));
+        callUnityFunctionByName('GameManager', 'OnNewClientStatus', JSON.stringify(data));
         postMessage(data, "*");
     })
 
