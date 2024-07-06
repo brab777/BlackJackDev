@@ -165,7 +165,7 @@ const fetchRequest = async (command, method, body) => {
             method: method,
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
-                'Authorization': 'Bearer ${Gtoken}',
+                'Authorization': `Bearer ${Gtoken}`,
 		        'access-control-allow-credentials' : true
             },
             credentials: 'include',
