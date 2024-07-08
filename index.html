@@ -51,35 +51,100 @@
 
     import * as player from './playerClient.js';
 
+    var unityInstance;
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/Blackjack Build.loader.js";
+    var config = {
+        dataUrl: buildUrl + "/Blackjack Build.data",
+        frameworkUrl: buildUrl + "/Blackjack Build.framework.js",
 
+        codeUrl: buildUrl + "/Blackjack Build.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Vivo",
+        productName: "Casino Blackjack",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+    };
+    var container = document.querySelector("#unity-container");
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var warningBanner = document.querySelector("#unity-warning");
 
+    const backendUrl2 = 'https://rngbj.kasoom.com';
     const backendUrl = `https://rngbj.kasoom.com/`;
     const urlParams = new URLSearchParams(window.location.search);
-    const bankID = urlParams.get('bankId');
-    const token = urlParams.get('token');
-    const operatorID = urlParams.get('operatorID');
-    const tableguid = "C8C12026C4F04EE4B5900BA017119B52";
     const gameid = urlParams.get('gameid');
-    const initResponse = await player.activateGame(token)
+    const token = urlParams.get('token');
+    const initResponse = null
 
-    console.log('Window Location Search URL: ', window.location.search);
+    //------------------------------------------------------------------------------------------------------------------Unity
 
-    //------------------------------------------------------------------------------------------------------------------------
+    // By default Unity keeps WebGL canvas render target size matched with
+    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+    // Set this to false if you want to decouple this synchronization from
+    // happening inside the engine, and you would instead like to size up
+    // the canvas DOM size and WebGL render target sizes yourself.
+    // config.matchWebGLToCanvasSize = false;
 
-    if (!initResponse?.info?.userId){
-        alert('No user ID.')
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
     }
 
-    let strategy;
+    loadingBar.style.display = "block";
 
-    let dealerKey = 'iqNy5YfOCk';
-    let tableID = '528';
-    let playerID= initResponse.info?.userId;
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+            progressBarFull.style.width = 100 * progress + "%";
+        }).then((instance) => {
+            unityInstance = instance;
+            player.setUnityInstance(unityInstanceRef)
+            loadingBar.style.display = "none";
+            const currentUrl = window.location.href;
+            initResponse = await player.activateGame(token)
+            if (!initResponse?.info?.userId) {
+                alert('No user ID.')
+            }
+            unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
+        }).catch((message) => {
+            alert(message);
+        });
+    };
+    document.body.appendChild(script);
 
-    //player.setPlayer(tableID, playerID);
+    // Shows a temporary message banner/ribbon for a few seconds, or
+    // a permanent error message on top of the canvas if type=='error'.
+    // If type=='warning', a yellow highlight color is used.
+    // Modify or remove this function to customize the visually presented
+    // way that non-critical warnings and error messages are presented to the
+    // user.
+
+    function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+            warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+            if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+            setTimeout(function () {
+                warningBanner.removeChild(div);
+                updateBannerVisibility();
+            }, 5000);
+        }
+        updateBannerVisibility();
+    }
 
     //------------------------------------------------------------------------------------------------------------------Listeners
-
+    /*
     addEventListener('change',(e)=>{
 
         let el=e.target
@@ -99,6 +164,7 @@
             player.setStrategy(playerID,tableID,strategy);
         }
     })
+    */
 
     addEventListener('message',e=>{
         if (!e.data || !e.data.newStatus){
