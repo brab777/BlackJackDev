@@ -98,22 +98,24 @@
 
     var script = document.createElement("script");
     script.src = loaderUrl;
-    script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-            progressBarFull.style.width = 100 * progress + "%";
-        }).then((instance) => {
+    script.onload = async () => {
+        try {
+            const instance = await createUnityInstance(canvas, config, (progress) => {
+                progressBarFull.style.width = 100 * progress + "%";
+            });
             unityInstance = instance;
-            player.setUnityInstance(unityInstanceRef)
+            player.setUnityInstance(unityInstanceRef);
             loadingBar.style.display = "none";
-            const initResponse = await player.activateGame(token)
+            const initResponse = await player.activateGame(token);
             if (!initResponse?.info?.userId) {
-                alert('No user ID.')
+                alert('No user ID.');
             }
             unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
-        }).catch((message) => {
+        } catch (message) {
             alert(message);
-        });
+        }
     };
+
     document.body.appendChild(script);
 
     // Shows a temporary message banner/ribbon for a few seconds, or
