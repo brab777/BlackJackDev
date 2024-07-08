@@ -4,7 +4,6 @@ let socket = null;
 let strategy;
 let dealerKey = 'iqNy5YfOCk';
 let tableID = '528';
-let playerID = initResponse.info?.userId;
 
 const backendUrl = 'https://rngbj.kasoom.com';
 
