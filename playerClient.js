@@ -304,5 +304,6 @@ export {
     CreateAllApi,
     setPlayer,
     sideBetApi,
-    activateGame
+    activateGame,
+    setUnity
 };
