@@ -106,7 +106,7 @@
                 progressBarFull.style.width = 100 * progress + "%";
             });
             unityInstance = instance;
-            player.setUnityInstance(unityInstanceRef);
+            player.setUnityInstance(unityInstance);
             loadingBar.style.display = "none";
             const initResponse = await player.activateGame(token);
             if (!initResponse?.info?.userId) {
