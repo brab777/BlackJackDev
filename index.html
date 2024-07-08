@@ -20,37 +20,37 @@
       </div>
       <div id="unity-warning"> </div>
     </div>
-<script>  
-      XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
-      var newOpen = function(_, url) {  
-        var original = this.originalOpen.apply(this, arguments);  
-        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {  
-          this.withCredentials = true;  
-        }  
-     
-        return original;  
-      }  
-      XMLHttpRequest.prototype.open = newOpen;  
+<script>
+      XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;
+      var newOpen = function(_, url) {
+        var original = this.originalOpen.apply(this, arguments);
+        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {
+          this.withCredentials = true;
+        }
+
+        return original;
+      }
+      XMLHttpRequest.prototype.open = newOpen;
 </script>
-      
+
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    
-<script>  
-    XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;  
-    var newOpen = function(_, url) {  
-        var original = this.originalOpen.apply(this, arguments);  
-        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {  
-            this.withCredentials = true;  
-        }  
-        return original;  
-    }  
-    XMLHttpRequest.prototype.open = newOpen;  
+
+<script>
+    XMLHttpRequest.prototype.originalOpen = XMLHttpRequest.prototype.open;
+    var newOpen = function(_, url) {
+        var original = this.originalOpen.apply(this, arguments);
+        if (url.indexOf('https://rngbj.kasoom.com/') === 0) {
+            this.withCredentials = true;
+        }
+        return original;
+    }
+    XMLHttpRequest.prototype.open = newOpen;
 </script>
-    
+
 <script type="module">
-    
+
     import * as player from './playerClient.js';
-    
+
 
 
     const backendUrl = `https://rngbj.kasoom.com/`;
@@ -61,34 +61,34 @@
     const tableguid = "C8C12026C4F04EE4B5900BA017119B52";
     const gameid = urlParams.get('gameid');
     const initResponse = await player.activateGame(token)
-    
+
     console.log('Window Location Search URL: ', window.location.search);
 
     //------------------------------------------------------------------------------------------------------------------------
 
-    if (!initResponse?.info?.userId){ 
+    if (!initResponse?.info?.userId){
         alert('No user ID.')
     }
-    
+
     let strategy;
-    
+
     let dealerKey = 'iqNy5YfOCk';
     let tableID = '528';
     let playerID= initResponse.info?.userId;
-    
+
     //player.setPlayer(tableID, playerID);
-    
+
     //------------------------------------------------------------------------------------------------------------------Listeners
-    
+
     addEventListener('change',(e)=>{
 
         let el=e.target
 
         if (el.id=='dealerKey'){
-             dealerKey=el.value;     
+             dealerKey=el.value;
         }
         if (el.id=='playerID'){
-            playerID=el.value;  
+            playerID=el.value;
             player.setPlayer(tableID,playerID)
         }
         if (el.id=='tableID'){
@@ -140,16 +140,6 @@
 
     //------
 
-    function BetApi(newbetAmount, handId) {
-        console.log("Llego")
-        player.BetApi(newbetAmount, handId);
-    }
-
-    function confirmBets() {
-        console.log("Llego2")
-        player.confirmBets();
-    }
-
 </script>
 </body>
-</html> 
+</html>
