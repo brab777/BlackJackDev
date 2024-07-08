@@ -6,6 +6,7 @@ let dealerKey = 'iqNy5YfOCk';
 let tableID = '528';
 
 const backendUrl = 'https://rngbj.kasoom.com';
+const unityInstance = null;
 
 //------------------------------------------------------------------------------------------------------------------Socket.on
 
