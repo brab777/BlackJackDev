@@ -76,7 +76,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const gameid = urlParams.get('gameid');
     const token = urlParams.get('token');
-    const initResponse = null
 
     //------------------------------------------------------------------------------------------------------------------Unity
 
@@ -106,8 +105,7 @@
             unityInstance = instance;
             player.setUnityInstance(unityInstanceRef)
             loadingBar.style.display = "none";
-            const currentUrl = window.location.href;
-            initResponse = await player.activateGame(token)
+            const initResponse = await player.activateGame(token)
             if (!initResponse?.info?.userId) {
                 alert('No user ID.')
             }
