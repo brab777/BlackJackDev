@@ -7,10 +7,6 @@ let tableID = '528';
 
 const backendUrl = 'https://rngbj.kasoom.com';
 
-const bankID = urlParams.get('bankId');
-const operatorID = urlParams.get('operatorID');
-const tableguid = "C8C12026C4F04EE4B5900BA017119B52";
-
 //------------------------------------------------------------------------------------------------------------------Socket.on
 
 function CreateSocket()
