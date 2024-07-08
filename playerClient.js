@@ -204,8 +204,7 @@ const call = async (command, method, body) => {
     return res
 };
 
-/*
-function setUnityInstance(unityInstanceRef) {
+function setUnity(unityInstanceRef) {
     unityInstance = unityInstanceRef;
 }
 
@@ -215,7 +214,7 @@ function callUnityFunctionByName(GOName, FName, dataU) {
     } else {
         console.error("Unity instance is not initialized.");
     }
-}*/
+}
 
 async function init(token) {
     const res = await fetchRequest(`init?token=${token}`, 'GET')
