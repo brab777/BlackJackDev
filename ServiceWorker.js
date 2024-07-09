@@ -1,9 +1,9 @@
 const cacheName = "Vivo-Casino Blackjack-1.0";
 const contentToCache = [
-    "Build/Build.loader.js",
-    "Build/Build.framework.js",
-    "Build/Build.data",
-    "Build/Build.wasm",
+    "Build/Blackjack Build.loader.js",
+    "Build/Blackjack Build.framework.js",
+    "Build/Blackjack Build.data",
+    "Build/Blackjack Build.wasm",
     "TemplateData/style.css"
 
 ];
