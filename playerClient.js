@@ -127,6 +127,14 @@ function setUser(player) {
     info.playerID = player;
 }
 
+async function newInit(){
+    const initResponse = await player.activateGame(token);
+    if (!initResponse?.info?.userId) {
+        alert('No user ID.');
+    }
+    unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
+}
+
 async function activateGame(token, operator = '') {
     const url = `${backendUrl}/api/init`;
     console.log("Posting token to init: ", url, token)
