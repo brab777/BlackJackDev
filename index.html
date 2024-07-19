@@ -108,6 +108,8 @@
             unityInstance = instance;
             player.setUnity(unityInstance);
             loadingBar.style.display = "none";
+            await delay(5000);
+            console.log("5 seconds have passed. Continuing with activateGame() function...");
             const initResponse = await player.activateGame(token);
             if (!initResponse?.info?.userId) {
                 alert('No user ID.');
