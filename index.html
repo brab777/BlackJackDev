@@ -108,7 +108,7 @@
             unityInstance = instance;
             player.setUnity(unityInstance);
             loadingBar.style.display = "none";
-            await delay(5000);
+            await timeout(3000);
             console.log("5 seconds have passed. Continuing with activateGame() function...");
             const initResponse = await player.activateGame(token);
             if (!initResponse?.info?.userId) {
@@ -147,6 +147,9 @@
         updateBannerVisibility();
     }
 
+    function timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
     //------------------------------------------------------------------------------------------------------------------Listeners
     /*
     addEventListener('change',(e)=>{
