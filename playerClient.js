@@ -329,5 +329,6 @@ export {
     setPlayer,
     sideBetApi,
     activateGame,
-    setUnity
+    setUnity,
+    newInit
 };
