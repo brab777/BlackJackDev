@@ -128,6 +128,7 @@ function setUser(player) {
 }
 
 async function newInit(){
+    console.log("NewInit - Restarting Init")
     const initResponse = await player.activateGame(token);
     if (!initResponse?.info?.userId) {
         alert('No user ID.');
