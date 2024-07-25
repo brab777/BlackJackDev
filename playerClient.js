@@ -138,7 +138,7 @@ async function newInit(){
 */
 function newInit(){
     console.log("NewInit - Restarting Init")
-    player.activateGame(token)
+    activateGame(token)
         .then(initResponse => {
             if (!initResponse?.info?.userId) {
                 alert('No user ID.');
