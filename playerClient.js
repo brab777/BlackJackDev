@@ -126,29 +126,6 @@ function setPlayer(table, token) { //Should sent playerID too?
 function setUser(player) {
     info.playerID = player;
 }
-/*
-async function newInit(){
-    console.log("NewInit - Restarting Init")
-    const initResponse = await player.activateGame(token);
-    if (!initResponse?.info?.userId) {
-        alert('No user ID.');
-    }
-    unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
-}
-*/
-function newInit(){
-    console.log("NewInit - Restarting Init")
-    activateGame(token)
-        .then(initResponse => {
-            if (!initResponse?.info?.userId) {
-                alert('No user ID.');
-            }
-            unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
-        })
-        .catch(error => {
-            console.error('Error during initialization:', error);
-        });
-}
 
 async function activateGame(token, operator = '') {
     const url = `${backendUrl}/api/init`;
@@ -329,6 +306,5 @@ export {
     setPlayer,
     sideBetApi,
     activateGame,
-    setUnity,
-    newInit
+    setUnity
 };
