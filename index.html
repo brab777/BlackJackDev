@@ -206,9 +206,9 @@
         }
     }
 
-    function newInitCall(){
+    window.newInitCall = function(){
         console.log("NewInit - Calling Init")
-        player.newInit();
+        player.newInit(token);
     }
 
     //function $$(str){return document.getElementById(str)}

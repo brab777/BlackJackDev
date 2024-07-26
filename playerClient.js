@@ -217,6 +217,20 @@ function callUnityFunctionByName(GOName, FName, dataU) {
     }
 }
 
+function newInit(token){
+    console.log("NewInit - Restarting Init")
+    activateGame(token)
+        .then(initResponse => {
+            if (!initResponse?.info?.userId) {
+                alert('No user ID.');
+            }
+            unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
+        })
+        .catch(error => {
+            console.error('Error during initialization:', error);
+        });
+}
+
 async function init(token) {
     const res = await fetchRequest(`init?token=${token}`, 'GET')
     console.log('Init response: ', res)
@@ -306,5 +320,6 @@ export {
     setPlayer,
     sideBetApi,
     activateGame,
-    setUnity
+    setUnity,
+    newInit
 };
