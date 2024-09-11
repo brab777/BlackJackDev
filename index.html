@@ -19,33 +19,20 @@
           overflow: hidden; 
         }
     
-        /* Style the canvas to fill the container or be centered if smaller */
+        /* Style the canvas to fit within the container while maintaining aspect ratio */
         #unity-canvas {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 100%; 
-          height: 100%; 
-        }
-    
-        /* Media query to handle cases where the canvas is smaller than the container */
-        @media (min-aspect-ratio: 1920/1080) {
-          #unity-canvas {
-            height: auto; 
-          }
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: contain; /* Ensure the canvas fits within the container */
         }
     
         /* Media query to handle vertical orientation */
         @media (orientation: portrait) {
           #unity-container {
             padding-bottom: 177.78%; /* 1080:1920 aspect ratio */
-          }
-    
-          @media (min-aspect-ratio: 1080/1920) {
-            #unity-canvas {
-              width: auto; /* Let the width adjust automatically */
-            }
           }
         }
       </style>
@@ -250,6 +237,20 @@
         console.log("NewInit - Calling Init")
         player.newInit();
     }
+
+    // Function to check orientation and update aspect ratio
+    function checkOrientation() {
+      const container = document.getElementById('unity-container');
+      if (window.innerHeight > window.innerWidth) { // Portrait orientation
+        container.style.paddingBottom = '177.78%'; // 1080:1920
+      } else { // Landscape orientation
+        container.style.paddingBottom = '56.25%'; // 1920:1080
+      }
+    }
+
+    // Call the function initially and on window resize
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
 
     //function $$(str){return document.getElementById(str)}
 
