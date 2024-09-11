@@ -8,11 +8,28 @@
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="manifest" href="manifest.webmanifest">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emscripten/2.0.31/system.js"></script>
+    <style>
+        /* Style the container to take up the full width and maintain aspect ratio */
+        #unity-container {
+          width: 100%; /* Take up full width */
+          max-width: 960px; /* Optional: Set a maximum width if needed */
+          height: 0; /* Set height to 0 initially */
+          padding-bottom: 62.5%; /* Maintain 16:10 aspect ratio (600 / 960 * 100) */
+          position: relative; /* To position the canvas absolutely */
+          margin: 0 auto; /* Center the container */
+        }
+    
+        /* Style the canvas to fill the container */
+        #unity-canvas {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+        }
+    </style>
 </head>
 <body>
     <div id="unity-container">
-      <div id="unity-container" style="width: 960px; height: 600px; margin: 0 auto;"> 
-      <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas> 
+      <canvas id="unity-canvas" tabindex="-1"></canvas>  
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
