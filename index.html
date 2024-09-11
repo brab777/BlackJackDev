@@ -31,8 +31,8 @@
           height: auto; /* Let height adjust automatically */
         }
     
-        /* Media query to handle vertical orientation on mobile */
-        @media (orientation: portrait) and (max-width: 768px) { /* Adjust max-width as needed */
+        /* Media query to handle mobile devices and force 1080:1920 aspect ratio */
+        @media (max-width: 768px) { /* Adjust max-width as needed */
           #unity-container {
             padding-bottom: 177.78%; /* 1080:1920 aspect ratio */
           }
@@ -244,25 +244,21 @@
         player.newInit();
     }
 
-    // Function to check device type and orientation, and update aspect ratio
-    function checkDeviceTypeAndOrientation() {
+    // Function to check device type and update aspect ratio
+    function checkDeviceType() {
       const container = document.getElementById('unity-container');
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       if (isMobile) {
-        if (window.innerHeight > window.innerWidth) { // Portrait on mobile
-          container.style.paddingBottom = '177.78%'; // 1080:1920
-        } else { // Landscape on mobile
-          container.style.paddingBottom = '56.25%'; // 1920:1080
-        }
+        container.style.paddingBottom = '177.78%'; // Always 1080:1920 on mobile
       } else { // PC 
         container.style.paddingBottom = '56.25%'; // Always 1920:1080 on PC
       }
     }
 
     // Call the function initially and on window resize
-    checkDeviceTypeAndOrientation();
-    window.addEventListener('resize', checkDeviceTypeAndOrientation);
+    checkDeviceType();
+    window.addEventListener('resize', checkDeviceType);
 
     //function $$(str){return document.getElementById(str)}
 
