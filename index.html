@@ -24,10 +24,19 @@
           position: absolute;
           top: 0;
           left: 0;
-          max-width: 100%;
-          max-height: 100%;
-          width: auto;
-          height: auto;
+          width: 100%; /* Default to full width */
+          height: auto; /* Let height adjust automatically */
+        }
+    
+        /* Media query to handle cases where 1080:1920 is better and fit the height */
+        @media (max-aspect-ratio: 1920/1080) {
+          #unity-container {
+            padding-bottom: 177.78%; /* 1080:1920 aspect ratio */
+          }
+          #unity-canvas {
+            width: auto; /* Let width adjust automatically */
+            height: 100%; /* Fit to height */
+          }
         }
       </style>
 </head>
@@ -239,13 +248,12 @@
       const desiredAspectRatio1920x1080 = 1920 / 1080;
       const desiredAspectRatio1080x1920 = 1080 / 1920;
 
-      if (Math.abs(windowAspectRatio - desiredAspectRatio1080x1920) < 
-          Math.abs(windowAspectRatio - desiredAspectRatio1920x1080)) {
-        // Window is closer to 1080:1920, so use that aspect ratio
-        container.style.paddingBottom = '177.78%';
-      } else {
-        // Window is closer to 1920:1080, so use that aspect ratio
+      if (windowAspectRatio > desiredAspectRatio1920x1080) {
+        // Window is wider than 1920:1080, so use that and fit to width
         container.style.paddingBottom = '56.25%';
+      } else {
+        // Window is closer to or taller than 1080:1920, so use that and fit to height
+        container.style.paddingBottom = '177.78%';
       }
     }
 
