@@ -138,6 +138,16 @@
             unityInstance = instance;
             player.setUnity(unityInstance);
             loadingBar.style.display = "none";
+
+            // Ensure canvas dimensions are set correctly after Unity initialization
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                canvas.width = 1080;
+                canvas.height = 1920;
+            } else {
+                canvas.width = 1920;
+                canvas.height = 1080;
+            }
+
             const initResponse = await player.activateGame(token);
             if (!initResponse?.info?.userId) {
                 alert('No user ID.');
