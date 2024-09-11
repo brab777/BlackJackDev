@@ -22,22 +22,24 @@
         /* Style the canvas to fit within the container while maintaining aspect ratio */
         #unity-canvas {
           position: absolute;
-          top: 0;
-          left: 0;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%); /* Center the canvas */
+          max-width: 100%;
+          max-height: 100%;
           width: 100%; /* Default to full width */
           height: auto; /* Let height adjust automatically */
         }
     
-        /* Media query to handle cases where 1080:1920 is better and fit the height */
-        @media (max-aspect-ratio: 1920/1080) {
-        #unity-container {
+        /* Media query to handle vertical orientation on mobile */
+        @media (orientation: portrait) and (max-width: 768px) { /* Adjust max-width as needed */
+          #unity-container {
             padding-bottom: 177.78%; /* 1080:1920 aspect ratio */
-        }
-        #unity-canvas {
+          }
+          #unity-canvas {
             width: auto; 
             height: 100%; 
-            max-width: 100%; /* Ensure canvas doesn't exceed container width */
-        }
+          }
         }
       </style>
 </head>
@@ -120,12 +122,12 @@
     // the canvas DOM size and WebGL render target sizes yourself.
     // config.matchWebGLToCanvasSize = false;
 
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    /*if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'; 
         document.getElementsByTagName('head')[0].appendChild(meta);
-    } 
+    } */
 
     loadingBar.style.display = "block";
 
@@ -242,25 +244,25 @@
         player.newInit();
     }
 
-    // Function to check aspect ratio and update container padding
-    function checkAspectRatio() {
+    // Function to check device type and orientation, and update aspect ratio
+    function checkDeviceTypeAndOrientation() {
       const container = document.getElementById('unity-container');
-      const windowAspectRatio = window.innerWidth / window.innerHeight;
-      const desiredAspectRatio1920x1080 = 1920 / 1080;
-      const desiredAspectRatio1080x1920 = 1080 / 1920;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-      if (windowAspectRatio > desiredAspectRatio1920x1080) {
-        // Window is wider than 1920:1080, so use that and fit to width
-        container.style.paddingBottom = '56.25%';
-      } else {
-        // Window is closer to or taller than 1080:1920, so use that and fit to height
-        container.style.paddingBottom = '177.78%';
+      if (isMobile) {
+        if (window.innerHeight > window.innerWidth) { // Portrait on mobile
+          container.style.paddingBottom = '177.78%'; // 1080:1920
+        } else { // Landscape on mobile
+          container.style.paddingBottom = '56.25%'; // 1920:1080
+        }
+      } else { // PC 
+        container.style.paddingBottom = '56.25%'; // Always 1920:1080 on PC
       }
     }
 
     // Call the function initially and on window resize
-    checkAspectRatio();
-    window.addEventListener('resize', checkAspectRatio);
+    checkDeviceTypeAndOrientation();
+    window.addEventListener('resize', checkDeviceTypeAndOrientation);
 
     //function $$(str){return document.getElementById(str)}
 
