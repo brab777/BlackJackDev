@@ -119,11 +119,34 @@
         // Adjust container aspect ratio
         container.style.paddingBottom = (1920 / 1080 * 100) + '%'; 
     } else {
-        // PC style: fill the whole browser client area with the game canvas, enforce landscape
-        // We already have the CSS to make the container fill the width and maintain aspect ratio.
-        // Just set the canvas dimensions to landscape
-        canvas.width = 1920;
-        canvas.height = 1080;
+            // PC style: Resize canvas to fit browser window while maintaining 1920x1080 aspect ratio
+            function resizeCanvas() {
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                const targetAspectRatio = 1920 / 1080;
+
+                let newWidth, newHeight;
+                if (windowWidth / windowHeight > targetAspectRatio) {
+                    // Window is wider than target aspect ratio, so height is the limiting factor
+                    newHeight = windowHeight;
+                    newWidth = newHeight * targetAspectRatio;
+                } else {
+                    // Window is taller than target aspect ratio, so width is the limiting factor
+                    newWidth = windowWidth;
+                    newHeight = newWidth / targetAspectRatio;
+                }
+
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+
+                // Update container dimensions to match the canvas
+                container.style.width = newWidth + 'px';
+                container.style.height = newHeight + 'px';
+            }
+
+            // Initial resize and add event listener for window resize
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
     }
 
     loadingBar.style.display = "block";
