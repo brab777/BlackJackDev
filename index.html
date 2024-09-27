@@ -222,12 +222,8 @@
 
     addEventListener('message',e=>{
         if (!e.data || !e.data.newStatus){
-            console.log("No data to show.")
-            console.log(e)
-            console.log(e.data)
             return;
         }
-        console.log(e.data)
         if (e.data == null) return;
         //renderState(e.data)
     })
@@ -256,7 +252,6 @@
     }
 
     function newInitCall(){
-        console.log("NewInit - Calling Init")
         player.newInit();
     }
 
