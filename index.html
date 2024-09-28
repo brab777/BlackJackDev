@@ -113,31 +113,32 @@
     // config.matchWebGLToCanvasSize = false;
     
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Use the screen orientation lock API to prevent landscape mode
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('portrait').catch(function (err) {
-            console.error("Orientation lock failed:", err);
-            });
-        }
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover, orientation=portrait'; 
+        document.getElementsByTagName('head')[0].appendChild(meta);  
+
         function resizeCanvas() {
             var windowWidth = window.innerWidth;
             var windowHeight = window.innerHeight;
 
             // Always set canvas dimensions to portrait, regardless of screen orientation
-            canvas.width = windowWidth;
-            canvas.height = windowHeight;
-
+            if (windowWidth > windowHeight) { 
+                canvas.width = windowHeight;
+                canvas.height = windowWidth;
+            } else {
+                canvas.width = windowWidth;
+                canvas.height = windowHeight;
+            }
             // Adjust container aspect ratio to match canvas (portrait)
             container.style.paddingBottom = (canvas.height / canvas.width * 100) + '%'; 
         }
+
+        // Initial resize
         resizeCanvas();
 
         // Resize on orientation change
-        window.addEventListener('orientationchange', () => {
-        setTimeout(resizeCanvas, 500); // Delay to allow screen size to stabilize
-        });
-
-        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('orientationchange', resizeCanvas);
     } else {
         // PC style: fit the canvas within the browser client area while maintaining the 1920x1080 aspect ratio
         var windowWidth = window.innerWidth;
