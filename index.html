@@ -10,27 +10,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emscripten/2.0.31/system.js"></script>
 
     <style>
-        #container {
-            width: 100%;
-            height: 0;
-            padding-bottom: 177.77%; /* 1920/1080 aspect ratio */
-            position: relative;
-        }
+        /* Default container styles, likely for PC */
+    #container {
+        width: 100%;
+        height: 0;
+        padding-bottom: 177.77%; /* 1920/1080 aspect ratio */
+        position: relative;
+    }
 
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+    /* Mobile-specific container styles */
+    @media (max-width: 768px) { 
+        #container {
+            width: 100%; 
+            margin: 0; 
+            padding-bottom: 56.25%; /* Maintain portrait aspect ratio */
         }
-        @media (max-width: 768px) { /* Adjust breakpoint if needed */
-            #container {
-                width: 100%; /* Take up full width on mobile */
-                margin: 0; /* Remove margins on mobile */
-                padding-bottom: 56.25%; /* Maintain portrait aspect ratio */
-            }
-        }
+    }
+
+    #canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
     </style>
 </head>
 <body>
@@ -113,18 +116,33 @@
     // config.matchWebGLToCanvasSize = false;
 
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas, enforce portrait
         var meta = document.createElement('meta');
         meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover, orientation=portrait'; // Add orientation=portrait
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover, orientation=portrait'; 
         document.getElementsByTagName('head')[0].appendChild(meta);  
 
-        // Set canvas dimensions to portrait
-        canvas.width = 1080;
-        canvas.height = 1920;
+        function resizeCanvas() {
+            var windowWidth = window.innerWidth;
+            var windowHeight = window.innerHeight;
 
-        // Adjust container aspect ratio
-        container.style.paddingBottom = (1920 / 1080 * 100) + '%';
+            // Always set canvas dimensions to portrait, regardless of screen orientation
+            if (windowWidth > windowHeight) { 
+                canvas.width = windowHeight;
+                canvas.height = windowWidth;
+            } else {
+                canvas.width = windowWidth;
+                canvas.height = windowHeight;
+            }
+
+            // Adjust container aspect ratio to match canvas (portrait)
+            container.style.paddingBottom = (canvas.height / canvas.width * 100) + '%'; 
+        }
+
+        // Initial resize
+        resizeCanvas();
+
+        // Resize on orientation change
+        window.addEventListener('orientationchange', resizeCanvas);
     } else {
         // PC style: fit the canvas within the browser client area while maintaining the 1920x1080 aspect ratio
         var windowWidth = window.innerWidth;
