@@ -114,7 +114,7 @@
     // happening inside the engine, and you would instead like to size up
     // the canvas DOM size and WebGL render target sizes yourself.
     // config.matchWebGLToCanvasSize = false;
-
+    
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement('meta');
         meta.name = 'viewport';
@@ -160,6 +160,10 @@
         }
     }
 
+    if(window.innerHeight > window.innerWidth){
+        document.getElementsByTagName("body")[0].style.transform = "rotate(90deg)";
+    }
+    
     loadingBar.style.display = "block";
 
     var script = document.createElement("script");
