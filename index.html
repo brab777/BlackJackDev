@@ -25,8 +25,10 @@
             height: 100%;
         }
         @media (max-width: 768px) { /* Adjust breakpoint if needed */
-            #unity-container {
-                padding-bottom: 56.25%; /* 1080/1920 aspect ratio for portrait */
+            #container {
+                width: 100%; /* Take up full width on mobile */
+                margin: 0; /* Remove margins on mobile */
+                padding-bottom: 56.25%; /* Maintain portrait aspect ratio */
             }
         }
     </style>
@@ -114,15 +116,15 @@
         // Mobile device style: fill the whole browser client area with the game canvas, enforce portrait
         var meta = document.createElement('meta');
         meta.name = 'viewport';
-         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover';
-        document.getElementsByTagName('head')[0].appendChild(meta);   
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover, orientation=portrait'; // Add orientation=portrait
+        document.getElementsByTagName('head')[0].appendChild(meta);  
 
         // Set canvas dimensions to portrait
         canvas.width = 1080;
         canvas.height = 1920;
 
         // Adjust container aspect ratio
-        container.style.paddingBottom = (1920 / 1080 * 100) + '%'; 
+        container.style.paddingBottom = (1920 / 1080 * 100) + '%';
     } else {
         // PC style: fit the canvas within the browser client area while maintaining the 1920x1080 aspect ratio
         var windowWidth = window.innerWidth;
