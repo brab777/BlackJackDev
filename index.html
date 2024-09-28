@@ -119,19 +119,14 @@
         document.getElementsByTagName('head')[0].appendChild(meta);  
 
         function resizeCanvas() {
-            var windowWidth = window.innerWidth;
-            var windowHeight = window.innerHeight;
-
-            // Always set canvas dimensions to portrait, regardless of screen orientation
-            if (windowWidth > windowHeight) { 
-                canvas.width = windowHeight;
-                canvas.height = windowWidth;
+            // Check if the device is in landscape mode
+            if (window.innerWidth > window.innerHeight) {
+                // Attempt to force portrait orientation using CSS transform
+                document.body.style.transform = 'rotate(90deg)'; 
             } else {
-                canvas.width = windowWidth;
-                canvas.height = windowHeight;
+                // Reset transform if in portrait mode
+                document.body.style.transform = '';
             }
-            // Adjust container aspect ratio to match canvas (portrait)
-            container.style.paddingBottom = (canvas.height / canvas.width * 100) + '%'; 
         }
 
         // Initial resize
