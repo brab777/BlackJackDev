@@ -234,11 +234,11 @@
     })
 
     window.addEventListener('offline', () => {
-      console.log('The network connection has been lost.');
+      //console.log('The network connection has been lost.');
     })
 
     window.addEventListener('online', () => {
-      console.log('The network connection has been restored.');
+      //console.log('The network connection has been restored.');
     })
 
 //------------------------------------------------------------------------------------------------------------------Unity/Other Functions
@@ -251,7 +251,7 @@
                 document.getElementById("prjson").innerHTML = JSON.stringify(state, undefined, 2);
             }
         } catch (error) {
-            console.error('Error rendering state:', error);
+            //console.error('Error rendering state:', error);
             // Handle error or log it appropriately
         }
     }

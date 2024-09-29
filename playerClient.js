@@ -25,28 +25,28 @@ function CreateSocket()
         console.log("Disconnected: ", reason);
         if (reason === "io server disconnect") {
             // Server disconnected the socket
-            console.log("Server initiated disconnection.");
+            //console.log("Server initiated disconnection.");
             tryReconnect(new Date());
         } else if (reason === "transport close" || reason === "ping timeout") {
             // Network issues or client-side disconnects
-            console.log("Client-side disconnection or network issue.");
+            //console.log("Client-side disconnection or network issue.");
             tryReconnect(new Date());
         } else {
-            console.log("Unknown disconnection reason:", reason);
+            //console.log("Unknown disconnection reason:", reason);
         }
     })
 
     socket.on('newState', data => {
-        console.log("NewState Called...");
+        //console.log("NewState Called...");
         data.newStatus = true;
         data.type = 'newState';
-        console.log(data);
+        //console.log(data);
         callUnityFunctionByName('GameManager', 'OnClientNewState', JSON.stringify(data));
         postMessage(data, "*");
     })
 
     socket.on('newClientStatus', data => {
-        console.log('newClientStatus', data)
+        //console.log('newClientStatus', data)
         data.newStatus = true;
         data.newPrivatestat = true;
         callUnityFunctionByName('GameManager', 'OnNewClientStatus', JSON.stringify(data));
@@ -54,11 +54,11 @@ function CreateSocket()
     })
 
     socket.on('NewBalance', () => {
-        console.log('New balance function called!')
+        //console.log('New balance function called!')
     })
 
     socket.on("showMess", data => {
-        console.log("Posting message: ", data)
+        //console.log("Posting message: ", data)
         data.type = "showMess";
         postMessage(data, '*')
     })
@@ -78,15 +78,15 @@ function CreateSocket()
     */
 
     socket.on('connect_error', (error) => {
-        console.log("Connection error:", error.message);
+        //console.log("Connection error:", error.message);
     });
 
     socket.on('error', (error) => {
-        console.error('WebSocket Error:', error);
+        //console.error('WebSocket Error:', error);
     });
 
     socket.on('reconnect_error', (error) => {
-        console.log("Reconnection error:", error.message);
+        //console.log("Reconnection error:", error.message);
     });
 }
 
@@ -102,7 +102,7 @@ function tryReconnect(disconnectTIme) {
         }, 300)
 
     } else {
-        console.log("Connection reestablished!")
+        //console.log("Connection reestablished!")
         setPlayer(info.tableID, info.playerID)
     }
 }
@@ -119,7 +119,7 @@ function setPlayer(table, token) { //Should sent playerID too?
     }
     postMessage(mess, '*');
     info.tableID = table;
-    console.log('Table message: ', table, mess)
+    //console.log('Table message: ', table, mess)
     socket.emit('setPlayer', mess);
 }
 
@@ -129,7 +129,7 @@ function setUser(player) {
 
 async function activateGame(token, operator = '') {
     const url = `${backendUrl}/api/init`;
-    console.log("Posting token to init: ", url, token)
+    //console.log("Posting token to init: ", url, token)
     let res = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
@@ -150,14 +150,14 @@ async function activateGame(token, operator = '') {
 
     let finalRes = await res.json()
     Gtoken = finalRes.token;
-    console.log("Token received: ", Gtoken)
-    console.log("After init: ", tableID, info.playerID, Gtoken)
+    //console.log("Token received: ", Gtoken)
+    //console.log("After init: ", tableID, info.playerID, Gtoken)
     CreateSocket()
     setPlayer(tableID, Gtoken)
     if (finalRes.status == "OK") {
         //setPlayer();
     }
-    console.log("Activation response token: ", finalRes.token)
+    //console.log("Activation response token: ", finalRes.token)
     return finalRes;
 }
 
@@ -176,12 +176,12 @@ const fetchRequest = async (command, method, body) => {
             body: JSON.stringify(body)
         })
         if (!res.ok) {
-            console.log('Response not OK: ', res.status, res.statusText);
+            //console.log('Response not OK: ', res.status, res.statusText);
             throw new Error(`HTTP error! status: ${res.status}`);
         }
         return await res.json()
     } catch (err) {
-        console.log('Error fetching: ', err)
+        //console.log('Error fetching: ', err)
         return {
             status: 'azErr',
             errCode: 'fetchErr'
@@ -200,7 +200,7 @@ const call = async (command, method, body) => {
                 return await call(command, method, body)
             }
         }
-        console.log('Fetch error: ', res)
+//console.log('Fetch error: ', res)
     }
     return res
 };
@@ -213,13 +213,13 @@ function callUnityFunctionByName(GOName, FName, dataU) {
     if (unityInstance) {
         unityInstance.SendMessage(GOName, FName, JSON.stringify(dataU));
     } else {
-        console.error("Unity instance is not initialized.");
+        //console.error("Unity instance is not initialized.");
     }
 }
 
 async function init(token) {
     const res = await fetchRequest(`init?token=${token}`, 'GET')
-    console.log('Init response: ', res)
+    //console.log('Init response: ', res)
     return res
 }
 
@@ -240,7 +240,7 @@ const stateHandApi = () => {
 }
 
 const BetApi = (newbetAmount, handId) => {
-    console.log('Fetching BETAPI: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
+    //console.log('Fetching BETAPI: ', `${backendUrl}/api/${command}`, 'token', Gtoken)
     return call(`bet/${info.playerID}/${info.tableID}/${handId}/${newbetAmount}`, 'GET')
 }
 
@@ -257,7 +257,7 @@ const next = () => {
 }
 
 const confirmBets = () => {
-    console.log("Llego3")
+    //console.log("Llego3")
     return call(`confirmBets/${info.playerID}/${info.tableID}`, 'GET')
 }
 
