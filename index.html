@@ -12,15 +12,18 @@
     <style>
      #container {
       position: relative;
-      width: 100%;
-      height: 100%; /* Take up full viewport height */
-      overflow: hidden; /* Prevent canvas from overflowing */
+      width: 100%; 
+      height: 100vh; /* Ensure container takes full viewport height */
+      overflow: hidden;
+      display: flex;
+      justify-content: center; /* Horizontally center the canvas */
+      align-items: center; /* Vertically center the canvas */
     }
+
     #canvas {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); /* Center the canvas */
+      /* No need for positioning or transforms */
+      max-width: 100%; /* Ensure canvas doesn't exceed container width */
+      max-height: 100%; /* Ensure canvas doesn't exceed container height */
     }
     </style>
 </head>
@@ -122,30 +125,25 @@
                 canvas.height = windowWidth / aspectRatio;
             }
         }
-
-    // Initial resize
-    resizeCanvas();
-
-    // Resize on window resize
-    window.addEventListener('resize', resizeCanvas); 
-
+        // Initial resize
+        resizeCanvas();
+        // Resize on window resize
+        window.addEventListener('resize', resizeCanvas); 
         // Resize on orientation change
         window.addEventListener('orientationchange', resizeCanvas);
     } else {
-        // PC style: fit the canvas within the browser client area while maintaining the 1920x1080 aspect ratio
         var windowWidth = window.innerWidth;
         var windowHeight = window.innerHeight;
-        var aspectRatio = 1920 / 1080;
+        var aspectRatio = 1920 / 1080; // Landscape aspect ratio
 
-        if (windowWidth / windowHeight > aspectRatio) {
-            // Window is wider than the canvas aspect ratio, so constrain by height
+        canvas.width = windowWidth; // Always use full width
+        canvas.height = windowWidth / aspectRatio; // Calculate height to maintain aspect ratio
+
+        // If calculated height exceeds window height, constrain by height
+        if (canvas.height > windowHeight) {
             canvas.height = windowHeight;
             canvas.width = windowHeight * aspectRatio;
-        } else {
-            // Window is taller than the canvas aspect ratio, so constrain by width
-            canvas.width = windowWidth;
-            canvas.height = windowWidth / aspectRatio;
-        }
+        } 
     }
 
 
