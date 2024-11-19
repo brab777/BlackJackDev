@@ -127,12 +127,13 @@ function setUser(player) {
     info.playerID = player;
 }
 
-async function activateGame(token, operator = '') {
+async function activateGame(token, bankID, operator = '') {
     const url = `${backendUrl}/api/init`;
-    //console.log("Posting token to init: ", url, token)
+    //console.log("Posting token to init: ", url, token, bankID)
     let res = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
+            bankerId: bankID,
             token: token,
             operator: operator
         }),

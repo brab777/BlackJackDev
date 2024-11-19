@@ -158,7 +158,7 @@
             player.setUnity(unityInstance);
             loadingBar.style.display = "none";
 
-            const initResponse = await player.activateGame(token);
+            const initResponse = await player.activateGame(token, bankID);
             if (!initResponse?.info?.userId) {
                 alert('No user ID.');
             }
