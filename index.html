@@ -4,27 +4,35 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Casino Blackjack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="manifest" href="manifest.webmanifest">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emscripten/2.0.31/system.js"></script>
 
     <style>
-     #container {
-      position: relative;
-      width: 100%; 
-      height: 100vh; /* Ensure container takes full viewport height */
-      overflow: hidden;
-      display: flex;
-      justify-content: center; /* Horizontally center the canvas */
-      align-items: center; /* Vertically center the canvas */
-    }
+     html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; 
+        background-color: #000; 
+      }
 
-    #canvas {
-      /* No need for positioning or transforms */
-      max-width: 100%; /* Ensure canvas doesn't exceed container width */
-      max-height: 100%; /* Ensure canvas doesn't exceed container height */
-    }
+      #unity-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #unity-canvas {
+        width: 100%;
+        height: 100%;
+        background: #000;
+      }
     </style>
 </head>
 <body>
@@ -147,70 +155,60 @@
 
 
     loadingBar.style.display = "block";
-
-    var script = document.createElement("script");
+    const script = document.createElement("script");
     script.src = loaderUrl;
-    script.onload = async () => {
-        try {
-            const instance = await createUnityInstance(canvas, config, (progress) => {
-                progressBarFull.style.width = 100 * progress + "%";
-            });
-            unityInstance = instance;
-            player.setUnity(unityInstance);
-            loadingBar.style.display = "none";
+    
+    script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          fullscreenButton.onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+          
+          let resizeTimeout;
 
-            console.log("Controlador de canvas reactivo");
+          function handleResize() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
 
-          function updateCanvasLayout() {
-            if (window.visualViewport) {
-              const vp = window.visualViewport;
+            // Calcula el tamaño real en píxeles
+            const newWidth = Math.round(rect.width * dpr);
+            const newHeight = Math.round(rect.height * dpr);
 
-              const viewportWidth = vp.width;
-              const viewportHeight = vp.height;
-              const viewportOffsetLeft = vp.offsetLeft;
-              const viewportOffsetTop = vp.offsetTop;
-
-              console.log(`Actualizando layout: W=${viewportWidth}, H=${viewportHeight}, L=${viewportOffsetLeft}, T=${viewportOffsetTop}`);
-
-              container.style.width = viewportWidth + 'px';
-              container.style.height = viewportHeight + 'px';
-              container.style.left = viewportOffsetLeft + 'px';
-              container.style.top = viewportOffsetTop + 'px';
-            
-              const dpr = window.devicePixelRatio || 1;
-              const canvasWidth = Math.round(viewportWidth * dpr);
-              const canvasHeight = Math.round(viewportHeight * dpr);
-
-              if (canvas.width!== canvasWidth || canvas.height!== canvasHeight) {
-                canvas.width = canvasWidth;
-                canvas.height = canvasHeight;
-                console.log(`Resolución del canvas ajustada a ${canvas.width}x${canvas.height} (DPR: ${dpr})`);
-              }
-            } else {
-              container.style.width = window.innerWidth + 'px';
-              container.style.height = window.innerHeight + 'px';
-              container.style.left = '0px';
-              container.style.top = '0px';
+            // Solo actualiza si el tamaño ha cambiado 
+            if (canvas.width!== newWidth || canvas.height!== newHeight) {
+              canvas.width = newWidth;
+              canvas.height = newHeight;
+              console.log(`Canvas resized to: ${canvas.width}x${canvas.height} (DPR: ${dpr})`);
             }
           }
-          if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', updateCanvasLayout);
-            window.visualViewport.addEventListener('scroll', updateCanvasLayout);
+
+          // Evita que handleResize() se ejecute demasiadas veces 
+          function debouncedResize() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(handleResize, 100); // 100ms de retraso
           }
-          window.addEventListener('resize', updateCanvasLayout);
-          updateCanvasLayout();
 
-            const initResponse = await player.activateGame(token, bankID);
-            if (!initResponse?.info?.userId) {
-                alert('No user ID.');
-            }
-            unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
-        } catch (message) {
-            alert(message);
-        }
-    };
+          if (screen.orientation) {
+            screen.orientation.addEventListener('change', debouncedResize);
+            console.log("Attached to screen.orientation.change event.");
+          } else {
+            // Fallback para navegadores más antiguos
+            window.addEventListener('orientationchange', debouncedResize);
+            console.log("Attached to window.orientationchange event (fallback).");
+          }
+          
+          window.addEventListener('resize', debouncedResize);
+          console.log("Attached to window.resize event.");
+          handleResize();
 
-    document.body.appendChild(script);
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
 
     // Shows a temporary message banner/ribbon for a few seconds, or
     // a permanent error message on top of the canvas if type=='error'.
