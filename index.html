@@ -114,7 +114,7 @@
     // happening inside the engine, and you would instead like to size up
     // the canvas DOM size and WebGL render target sizes yourself.
     // config.matchWebGLToCanvasSize = false;
-    
+    /*
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement('meta');
         meta.name = 'viewport';
@@ -152,7 +152,7 @@
             canvas.width = windowHeight * aspectRatio;
         } 
     }
-
+*/
 
     loadingBar.style.display = "block";
     const script = document.createElement("script");
@@ -170,17 +170,31 @@
             };
           }
           
+          import('./playerClient.js').then(playerClient => {
+            playerClient.setUnity(unityInstance);
+
+            window.MyApiClient = {
+              activateGame: playerClient.activateGame,
+              BetApi: playerClient.BetApi,
+              HitApi: playerClient.HitApi,
+              StandApi: playerClient.StandApi,
+              splitApi: playerClient.splitApi,
+              DoubleApi: playerClient.DoubleApi,
+              confirmBets: playerClient.confirmBets
+            };
+            console.log("Puente JS-Unity creado. Unity puede llamar a funciones en window.MyApiClient.");
+            unityInstance.SendMessage('GameManager', 'OnJavaScriptReady');
+
+          }).catch(err => console.error("Error al cargar playerClient.js:", err));
+
           let resizeTimeout;
 
           function handleResize() {
             const dpr = window.devicePixelRatio || 1;
             const rect = canvas.getBoundingClientRect();
-
-            // Calcula el tamaño real en píxeles
             const newWidth = Math.round(rect.width * dpr);
             const newHeight = Math.round(rect.height * dpr);
 
-            // Solo actualiza si el tamaño ha cambiado 
             if (canvas.width!== newWidth || canvas.height!== newHeight) {
               canvas.width = newWidth;
               canvas.height = newHeight;
