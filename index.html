@@ -114,7 +114,7 @@
     // happening inside the engine, and you would instead like to size up
     // the canvas DOM size and WebGL render target sizes yourself.
     // config.matchWebGLToCanvasSize = false;
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    /*if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover, orientation=portrait'; 
@@ -150,7 +150,7 @@
             canvas.height = windowHeight;
             canvas.width = windowHeight * aspectRatio;
         } 
-    }
+    }*/
 
     loadingBar.style.display = "block";
     const script = document.createElement("script");
@@ -166,7 +166,7 @@
             loadingBar.style.display = "none";
 
             console.log("Controlador de canvas reactivo");
-
+/*
           function updateCanvasLayout() {
             if (window.visualViewport) {
               const vp = window.visualViewport;
@@ -205,6 +205,7 @@
             }
             window.addEventListener('resize', updateCanvasLayout);
             updateCanvasLayout();
+            */
             const initResponse = await player.activateGame(token, bankID);
             if (!initResponse?.info?.userId) {
                 alert('No user ID.');
@@ -215,6 +216,23 @@
         }
       };
       document.body.appendChild(script);
+
+      document.body.addEventListener('click', function lockOrientation() {
+        // Solo se ejecuta una vez
+        document.body.removeEventListener('click', lockOrientation);
+
+        // Solicitar pantalla completa (a menudo un requisito para el bloqueo de orientación)
+        document.documentElement.requestFullscreen().then(() => {
+            // Intentar bloquear la orientación a 'landscape'
+            screen.orientation.lock('landscape').then(() => {
+                console.log('Orientación bloqueada a landscape.');
+            }).catch((error) => {
+                console.error('Fallo al bloquear la orientación:', error);
+            });
+        }).catch((error) => {
+            console.error('Fallo al entrar en pantalla completa:', error);
+        });
+      }, { once: true });
 
     // Shows a temporary message banner/ribbon for a few seconds, or
     // a permanent error message on top of the canvas if type=='error'.
