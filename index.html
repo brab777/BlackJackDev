@@ -157,82 +157,82 @@
     script.src = loaderUrl;
     
     script.onload = async () => {
-        try {
-            const instance = await createUnityInstance(canvas, config, (progress) => {
-                progressBarFull.style.width = 100 * progress + "%";
-            });
-            unityInstance = instance;
-            player.setUnity(unityInstance);
-            loadingBar.style.display = "none";
+    try {
+        const instance = await createUnityInstance(canvas, config, (progress) => {
+            progressBarFull.style.width = 100 * progress + "%";
+        });
+        unityInstance = instance;
+        player.setUnity(unityInstance);
+        loadingBar.style.display = "none";
 
-            console.log("Controlador de canvas reactivo");
-/*
-          function updateCanvasLayout() {
-            if (window.visualViewport) {
-              const vp = window.visualViewport;
+        console.log("Controlador de canvas reactivo");
 
-              const viewportWidth = vp.width;
-              const viewportHeight = vp.height;
-              const viewportOffsetLeft = vp.offsetLeft;
-              const viewportOffsetTop = vp.offsetTop;
+        // Función Debounce para limitar la frecuencia de llamadas
+        function debounce(func, timeout = 150) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
 
-              console.log(`Actualizando layout: W=${viewportWidth}, H=${viewportHeight}, L=${viewportOffsetLeft}, T=${viewportOffsetTop}`);
-
-              container.style.width = viewportWidth + 'px';
-              container.style.height = viewportHeight + 'px';
-              container.style.left = viewportOffsetLeft + 'px';
-              container.style.top = viewportOffsetTop + 'px';
+        function updateCanvasLayout() {
+            // Usar visualViewport si está disponible, de lo contrario, usar window
+            const vp = window.visualViewport || window;
             
-              const dpr = window.devicePixelRatio || 1;
-              const canvasWidth = Math.round(viewportWidth * dpr);
-              const canvasHeight = Math.round(viewportHeight * dpr);
+            const viewportWidth = vp.width;
+            const viewportHeight = vp.height;
+            // vp.offsetLeft y vp.offsetTop pueden no existir en `window`, por eso el fallback a 0
+            const viewportOffsetLeft = vp.offsetLeft || 0;
+            const viewportOffsetTop = vp.offsetTop || 0;
 
-              if (canvas.width!== canvasWidth || canvas.height!== canvasHeight) {
+            console.log(`Actualizando layout: W=${viewportWidth}, H=${viewportHeight}, L=${viewportOffsetLeft}, T=${viewportOffsetTop}`);
+
+            // Actualiza el estilo del contenedor
+            container.style.width = viewportWidth + 'px';
+            container.style.height = viewportHeight + 'px';
+            container.style.left = viewportOffsetLeft + 'px';
+            container.style.top = viewportOffsetTop + 'px';
+            
+            // Ajusta la resolución del canvas según el devicePixelRatio
+            const dpr = window.devicePixelRatio || 1;
+            const canvasWidth = Math.round(viewportWidth * dpr);
+            const canvasHeight = Math.round(viewportHeight * dpr);
+
+            if (canvas.width !== canvasWidth || canvas.height !== canvasHeight) {
                 canvas.width = canvasWidth;
                 canvas.height = canvasHeight;
                 console.log(`Resolución del canvas ajustada a ${canvas.width}x${canvas.height} (DPR: ${dpr})`);
-              }
-            } else {
-              container.style.width = window.innerWidth + 'px';
-              container.style.height = window.innerHeight + 'px';
-              container.style.left = '0px';
-              container.style.top = '0px';
             }
-          }
-            if (window.visualViewport) {
-              window.visualViewport.addEventListener('resize', updateCanvasLayout);
-              window.visualViewport.addEventListener('scroll', updateCanvasLayout);
-            }
-            window.addEventListener('resize', updateCanvasLayout);
-            updateCanvasLayout();
-            */
-            const initResponse = await player.activateGame(token, bankID);
-            if (!initResponse?.info?.userId) {
-                alert('No user ID.');
-            }
-            unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
-        } catch (message) {
-            alert(message);
         }
-      };
-      document.body.appendChild(script);
+        
+        // Crear una versión "debounced" de la función
+        const debouncedUpdate = debounce(updateCanvasLayout, 150);
 
-      document.body.addEventListener('click', function lockOrientation() {
-        // Solo se ejecuta una vez
-        document.body.removeEventListener('click', lockOrientation);
+        // Asignar los listeners a la versión debounced
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', debouncedUpdate);
+            window.visualViewport.addEventListener('scroll', debouncedUpdate);
+        }
+        window.addEventListener('resize', debouncedUpdate);
+        
+        // Ejecución inicial
+        updateCanvasLayout();
 
-        // Solicitar pantalla completa (a menudo un requisito para el bloqueo de orientación)
-        document.documentElement.requestFullscreen().then(() => {
-            // Intentar bloquear la orientación a 'landscape'
-            screen.orientation.lock('landscape').then(() => {
-                console.log('Orientación bloqueada a landscape.');
-            }).catch((error) => {
-                console.error('Fallo al bloquear la orientación:', error);
-            });
-        }).catch((error) => {
-            console.error('Fallo al entrar en pantalla completa:', error);
-        });
-      }, { once: true });
+        // Fallback para iOS: a veces los eventos no se disparan al aparecer el teclado.
+        // Un pequeño retraso puede ayudar a capturar el estado final.
+        setTimeout(updateCanvasLayout, 500);
+
+        const initResponse = await player.activateGame(token, bankID);
+        if (!initResponse?.info?.userId) {
+            alert('No user ID.');
+        }
+        unityInstance.SendMessage('GameManager', 'HandleInit', JSON.stringify(initResponse));
+    } catch (message) {
+        alert(message);
+    }
+};
+document.body.appendChild(script);
 
     // Shows a temporary message banner/ribbon for a few seconds, or
     // a permanent error message on top of the canvas if type=='error'.
@@ -262,28 +262,6 @@
     function timeout(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-    //------------------------------------------------------------------------------------------------------------------Listeners
-    /*
-    addEventListener('change',(e)=>{
-
-        let el=e.target
-
-        if (el.id=='dealerKey'){
-             dealerKey=el.value;
-        }
-        if (el.id=='playerID'){
-            playerID=el.value;
-            player.setPlayer(tableID,playerID)
-        }
-        if (el.id=='tableID'){
-            player.setPlayer(tableID,playerID)
-        }
-        if (el.id=='strategy'){
-            strategy=el.value;
-            player.setStrategy(playerID,tableID,strategy);
-        }
-    })
-    */
 
     addEventListener('message',e=>{
         if (!e.data || !e.data.newStatus){
@@ -320,10 +298,6 @@
         player.newInit();
     }
 
-    //function $$(str){return document.getElementById(str)}
-
-
-    //------
 
 </script>
 </body>
